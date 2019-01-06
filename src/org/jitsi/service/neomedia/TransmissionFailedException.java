@@ -22,16 +22,13 @@ package org.jitsi.service.neomedia;
  *
  * @author George Politis
  */
-public class TransmissionFailedException
-    extends Throwable
-{
-    /**
-     * Ctor.
-     *
-     * @param e
-     */
-    public TransmissionFailedException(Exception e)
-    {
-        super(e);
-    }
+public class TransmissionFailedException extends Throwable {
+	/**
+	 * Ctor.
+	 *
+	 * @param e
+	 */
+	public TransmissionFailedException(Exception e) {
+		super(e);
+	}
 }

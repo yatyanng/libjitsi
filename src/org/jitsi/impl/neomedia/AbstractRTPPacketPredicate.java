@@ -15,60 +15,48 @@
  */
 package org.jitsi.impl.neomedia;
 
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
-import org.jitsi.util.function.*;
+import org.jitsi.service.neomedia.ByteArrayBuffer;
+import org.jitsi.util.Logger;
+import org.jitsi.util.RTCPUtils;
+import org.jitsi.util.function.Predicate;
 
 /**
  * @author George Politis
  */
-public class AbstractRTPPacketPredicate
-    implements Predicate<ByteArrayBuffer>
-{
-    /**
-     * The <tt>Logger</tt> used by the <tt>AbstractRTPPacketPredicate</tt>
-     * class.
-     */
-    private static final Logger logger
-        = Logger.getLogger(AbstractRTPPacketPredicate.class);
+public class AbstractRTPPacketPredicate implements Predicate<ByteArrayBuffer> {
+	/**
+	 * The <tt>Logger</tt> used by the <tt>AbstractRTPPacketPredicate</tt> class.
+	 */
+	private static final Logger logger = Logger.getLogger(AbstractRTPPacketPredicate.class);
 
-    /**
-     * True if this predicate should test for RTCP, false for RTP.
-     */
-    private final boolean rtcp;
+	/**
+	 * True if this predicate should test for RTCP, false for RTP.
+	 */
+	private final boolean rtcp;
 
-    /**
-     * Ctor.
-     *
-     * @param rtcp true if this predicate should test for RTCP, false for RTP.
-     */
-    public AbstractRTPPacketPredicate(boolean rtcp)
-    {
-        this.rtcp = rtcp;
-    }
+	/**
+	 * Ctor.
+	 *
+	 * @param rtcp true if this predicate should test for RTCP, false for RTP.
+	 */
+	public AbstractRTPPacketPredicate(boolean rtcp) {
+		this.rtcp = rtcp;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean test(ByteArrayBuffer pkt)
-    {
-        // If isHeaderValid fails, this is not a valid RTP packet either.
-        if (pkt == null
-                || !RTCPUtils.isHeaderValid(
-                    pkt.getBuffer(), pkt.getOffset(), pkt.getLength()))
-        {
-            return false;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean test(ByteArrayBuffer pkt) {
+		// If isHeaderValid fails, this is not a valid RTP packet either.
+		if (pkt == null || !RTCPUtils.isHeaderValid(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
+			return false;
+		}
 
-        if (RTCPUtils.isRtcp(
-            pkt.getBuffer(), pkt.getOffset(), pkt.getLength()))
-        {
-            return rtcp;
-        }
-        else
-        {
-            return !rtcp;
-        }
-    }
+		if (RTCPUtils.isRtcp(pkt.getBuffer(), pkt.getOffset(), pkt.getLength())) {
+			return rtcp;
+		} else {
+			return !rtcp;
+		}
+	}
 }

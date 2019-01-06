@@ -15,70 +15,61 @@
  */
 package org.jitsi.util.function;
 
-import net.sf.fmj.media.rtp.*;
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.impl.neomedia.rtcp.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import org.jitsi.impl.neomedia.RTCPPacketPredicate;
+import org.jitsi.impl.neomedia.RTPPacketPredicate;
+import org.jitsi.impl.neomedia.rtcp.RTCPSenderInfoUtils;
+import org.jitsi.service.neomedia.ByteArrayBuffer;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.RTCPUtils;
+
+import net.sf.fmj.media.rtp.RTCPPacket;
 
 /**
  * @author George Politis
  */
-public class TimestampPacketTranslation<T extends ByteArrayBuffer>
-extends AbstractFunction<T, T>
-{
-    /**
-     * The {@link TimestampTranslation} to apply to the timestamp of the
-     * {@link RawPacket} that is specified as an argument in the apply method.
-     */
-    private final TimestampTranslation tsTranslation;
+public class TimestampPacketTranslation<T extends ByteArrayBuffer> extends AbstractFunction<T, T> {
+	/**
+	 * The {@link TimestampTranslation} to apply to the timestamp of the
+	 * {@link RawPacket} that is specified as an argument in the apply method.
+	 */
+	private final TimestampTranslation tsTranslation;
 
-    /**
-     * Ctor.
-     *
-     * @param tsDelta The delta to apply to the timestamp of the
-     * {@link RawPacket} that is specified as an argument in the apply method.
-     */
-    public TimestampPacketTranslation(long tsDelta)
-    {
-        this.tsTranslation = new TimestampTranslation(tsDelta);
-    }
+	/**
+	 * Ctor.
+	 *
+	 * @param tsDelta The delta to apply to the timestamp of the {@link RawPacket}
+	 *                that is specified as an argument in the apply method.
+	 */
+	public TimestampPacketTranslation(long tsDelta) {
+		this.tsTranslation = new TimestampTranslation(tsDelta);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public T apply(T pktIn)
-    {
-        if (RTPPacketPredicate.INSTANCE.test(pktIn))
-        {
-            long srcTs = RawPacket.getTimestamp(pktIn);
-            long dstTs = tsTranslation.apply(srcTs);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public T apply(T pktIn) {
+		if (RTPPacketPredicate.INSTANCE.test(pktIn)) {
+			long srcTs = RawPacket.getTimestamp(pktIn);
+			long dstTs = tsTranslation.apply(srcTs);
 
-            if (dstTs != srcTs)
-            {
-                RawPacket.setTimestamp(pktIn, dstTs);
-            }
+			if (dstTs != srcTs) {
+				RawPacket.setTimestamp(pktIn, dstTs);
+			}
 
-            return pktIn;
-        }
-        else if (RTCPPacketPredicate.INSTANCE.test(pktIn)
-            && RTCPUtils.getPacketType(pktIn) == RTCPPacket.SR)
-        {
-            // Rewrite the timestamp of an SR packet.
-            long srcTs = RTCPSenderInfoUtils.getTimestamp(pktIn);
-            long dstTs = tsTranslation.apply(srcTs);
+			return pktIn;
+		} else if (RTCPPacketPredicate.INSTANCE.test(pktIn) && RTCPUtils.getPacketType(pktIn) == RTCPPacket.SR) {
+			// Rewrite the timestamp of an SR packet.
+			long srcTs = RTCPSenderInfoUtils.getTimestamp(pktIn);
+			long dstTs = tsTranslation.apply(srcTs);
 
-            if (srcTs != dstTs)
-            {
-                RTCPSenderInfoUtils.setTimestamp(pktIn, (int) dstTs);
-            }
+			if (srcTs != dstTs) {
+				RTCPSenderInfoUtils.setTimestamp(pktIn, (int) dstTs);
+			}
 
-            return pktIn;
-        }
-        else
-        {
-            return pktIn;
-        }
-    }
+			return pktIn;
+		} else {
+			return pktIn;
+		}
+	}
 }

@@ -15,8 +15,8 @@
  */
 package org.jitsi.impl.neomedia.jmfext.media.protocol;
 
-import javax.media.*;
-import javax.media.control.*;
+import javax.media.MediaLocator;
+import javax.media.control.FrameRateControl;
 
 /**
  * Provides a base implementation of <tt>PushBufferDataSource</tt> and
@@ -25,42 +25,37 @@ import javax.media.control.*;
  *
  * @author Lyubomir Marinov
  */
-public abstract class AbstractVideoPushBufferCaptureDevice
-    extends AbstractPushBufferCaptureDevice
-{
+public abstract class AbstractVideoPushBufferCaptureDevice extends AbstractPushBufferCaptureDevice {
 
-    /**
-     * Initializes a new <tt>AbstractVideoPushBufferCaptureDevice</tt> instance.
-     */
-    protected AbstractVideoPushBufferCaptureDevice()
-    {
-        this(null);
-    }
+	/**
+	 * Initializes a new <tt>AbstractVideoPushBufferCaptureDevice</tt> instance.
+	 */
+	protected AbstractVideoPushBufferCaptureDevice() {
+		this(null);
+	}
 
-    /**
-     * Initializes a new <tt>AbstractVideoPushBufferCaptureDevice</tt> instance
-     * from a specific <tt>MediaLocator</tt>.
-     *
-     * @param locator the <tt>MediaLocator</tt> to create the new instance from
-     */
-    protected AbstractVideoPushBufferCaptureDevice(MediaLocator locator)
-    {
-        super(locator);
-    }
+	/**
+	 * Initializes a new <tt>AbstractVideoPushBufferCaptureDevice</tt> instance from
+	 * a specific <tt>MediaLocator</tt>.
+	 *
+	 * @param locator the <tt>MediaLocator</tt> to create the new instance from
+	 */
+	protected AbstractVideoPushBufferCaptureDevice(MediaLocator locator) {
+		super(locator);
+	}
 
-    /**
-     * Creates a new <tt>FrameRateControl</tt> instance which is to allow the
-     * getting and setting of the frame rate of this
-     * <tt>AbstractVideoPushBufferCaptureDevice</tt>.
-     *
-     * @return a new <tt>FrameRateControl</tt> instance which is to allow the
-     * getting and setting of the frame rate of this
-     * <tt>AbstractVideoPushBufferCaptureDevice</tt>
-     * @see AbstractPushBufferCaptureDevice#createFrameRateControl()
-     */
-    @Override
-    protected FrameRateControl createFrameRateControl()
-    {
-        return null;
-    }
+	/**
+	 * Creates a new <tt>FrameRateControl</tt> instance which is to allow the
+	 * getting and setting of the frame rate of this
+	 * <tt>AbstractVideoPushBufferCaptureDevice</tt>.
+	 *
+	 * @return a new <tt>FrameRateControl</tt> instance which is to allow the
+	 *         getting and setting of the frame rate of this
+	 *         <tt>AbstractVideoPushBufferCaptureDevice</tt>
+	 * @see AbstractPushBufferCaptureDevice#createFrameRateControl()
+	 */
+	@Override
+	protected FrameRateControl createFrameRateControl() {
+		return null;
+	}
 }

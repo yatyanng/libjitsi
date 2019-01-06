@@ -15,12 +15,12 @@
  */
 package org.jitsi.config;
 
-import org.jitsi.impl.configuration.*;
-import org.jitsi.service.configuration.*;
-import org.jitsi.service.libjitsi.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import org.jitsi.impl.configuration.ConfigurationServiceImpl;
+import org.jitsi.service.configuration.ConfigurationService;
+import org.jitsi.service.libjitsi.LibJitsi;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Just a playground - do not integrate.
@@ -28,37 +28,28 @@ import org.junit.runners.*;
  * @author Pawel Domas
  */
 @RunWith(JUnit4.class)
-public class ConfigPrintTest
-{
-    @Test
-    public void printTest()
-    {
-        ConfigurationServiceImpl.PASSWORD_SYS_PROPS = "cpu";
-        ConfigurationServiceImpl.PASSWORD_CMD_LINE_ARGS = "secret,password";
+public class ConfigPrintTest {
+	@Test
+	public void printTest() {
+		ConfigurationServiceImpl.PASSWORD_SYS_PROPS = "cpu";
+		ConfigurationServiceImpl.PASSWORD_CMD_LINE_ARGS = "secret,password";
 
-        System.setProperty("sun.java.command", "secret=1234 password=23432");
+		System.setProperty("sun.java.command", "secret=1234 password=23432");
 
-        LibJitsi.start();
+		LibJitsi.start();
 
-        ConfigurationService config = LibJitsi.getConfigurationService();
+		ConfigurationService config = LibJitsi.getConfigurationService();
 
-        System.err.println("********* END OF SYS PROPS *************");
+		System.err.println("********* END OF SYS PROPS *************");
 
-        config.setProperty(
-            "test.org.jitsi.jicofo.FOCUS_USER_PASSWORD", "secret12345");
-        config.setProperty(
-            "test.org.jitsi.jicofo.COMPONENT_SECRET", "1234");
-        config.setProperty(
-            "test.org.jitsi.jicofo.BLABLA", "123.44.34.5");
-        config.setProperty(
-            "test.org.jitsi.jicofo.COMPONENT_DOMAIN", "example.com");
-        config.setProperty(
-            "com.sun.setting", "true");
-        config.setProperty(
-            "some.empty_pass", "");
-        config.setProperty(
-            "some.null", null);
+		config.setProperty("test.org.jitsi.jicofo.FOCUS_USER_PASSWORD", "secret12345");
+		config.setProperty("test.org.jitsi.jicofo.COMPONENT_SECRET", "1234");
+		config.setProperty("test.org.jitsi.jicofo.BLABLA", "123.44.34.5");
+		config.setProperty("test.org.jitsi.jicofo.COMPONENT_DOMAIN", "example.com");
+		config.setProperty("com.sun.setting", "true");
+		config.setProperty("some.empty_pass", "");
+		config.setProperty("some.null", null);
 
-        config.logConfigurationProperties("(pass(w)?(or)?d?)|(secret)");
-    }
+		config.logConfigurationProperties("(pass(w)?(or)?d?)|(secret)");
+	}
 }

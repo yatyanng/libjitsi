@@ -15,10 +15,10 @@
  */
 package org.jitsi.impl.neomedia.jmfext.media.protocol;
 
-import javax.media.*;
-import javax.media.control.*;
+import javax.media.MediaLocator;
+import javax.media.control.FrameRateControl;
 
-import org.jitsi.impl.neomedia.control.*;
+import org.jitsi.impl.neomedia.control.FrameRateControlAdapter;
 
 /**
  * Provides a base implementation of <tt>PullBufferDataSource</tt> and
@@ -27,62 +27,52 @@ import org.jitsi.impl.neomedia.control.*;
  *
  * @author Lyubomir Marinov
  */
-public abstract class AbstractVideoPullBufferCaptureDevice
-    extends AbstractPullBufferCaptureDevice
-{
+public abstract class AbstractVideoPullBufferCaptureDevice extends AbstractPullBufferCaptureDevice {
 
-    /**
-     * Initializes a new <tt>AbstractVideoPullBufferCaptureDevice</tt> instance.
-     */
-    protected AbstractVideoPullBufferCaptureDevice()
-    {
-    }
+	/**
+	 * Initializes a new <tt>AbstractVideoPullBufferCaptureDevice</tt> instance.
+	 */
+	protected AbstractVideoPullBufferCaptureDevice() {
+	}
 
-    /**
-     * Initializes a new <tt>AbstractVideoPullBufferCaptureDevice</tt> instance
-     * from a specific <tt>MediaLocator</tt>.
-     *
-     * @param locator the <tt>MediaLocator</tt> to create the new instance from
-     */
-    protected AbstractVideoPullBufferCaptureDevice(MediaLocator locator)
-    {
-        super(locator);
-    }
+	/**
+	 * Initializes a new <tt>AbstractVideoPullBufferCaptureDevice</tt> instance from
+	 * a specific <tt>MediaLocator</tt>.
+	 *
+	 * @param locator the <tt>MediaLocator</tt> to create the new instance from
+	 */
+	protected AbstractVideoPullBufferCaptureDevice(MediaLocator locator) {
+		super(locator);
+	}
 
-    /**
-     * Creates a new <tt>FrameRateControl</tt> instance which is to allow the
-     * getting and setting of the frame rate of this
-     * <tt>AbstractVideoPullBufferCaptureDevice</tt>.
-     *
-     * @return a new <tt>FrameRateControl</tt> instance which is to allow the
-     * getting and setting of the frame rate of this
-     * <tt>AbstractVideoPullBufferCaptureDevice</tt>
-     * @see AbstractPullBufferCaptureDevice#createFrameRateControl()
-     */
-    @Override
-    protected FrameRateControl createFrameRateControl()
-    {
-        return
-            new FrameRateControlAdapter()
-            {
-                /**
-                 * The output frame rate of this
-                 * <tt>AbstractVideoPullBufferCaptureDevice</tt>.
-                 */
-                private float frameRate = -1;
+	/**
+	 * Creates a new <tt>FrameRateControl</tt> instance which is to allow the
+	 * getting and setting of the frame rate of this
+	 * <tt>AbstractVideoPullBufferCaptureDevice</tt>.
+	 *
+	 * @return a new <tt>FrameRateControl</tt> instance which is to allow the
+	 *         getting and setting of the frame rate of this
+	 *         <tt>AbstractVideoPullBufferCaptureDevice</tt>
+	 * @see AbstractPullBufferCaptureDevice#createFrameRateControl()
+	 */
+	@Override
+	protected FrameRateControl createFrameRateControl() {
+		return new FrameRateControlAdapter() {
+			/**
+			 * The output frame rate of this <tt>AbstractVideoPullBufferCaptureDevice</tt>.
+			 */
+			private float frameRate = -1;
 
-                @Override
-                public float getFrameRate()
-                {
-                    return frameRate;
-                }
+			@Override
+			public float getFrameRate() {
+				return frameRate;
+			}
 
-                @Override
-                public float setFrameRate(float frameRate)
-                {
-                    this.frameRate = frameRate;
-                    return this.frameRate;
-                }
-            };
-    }
+			@Override
+			public float setFrameRate(float frameRate) {
+				this.frameRate = frameRate;
+				return this.frameRate;
+			}
+		};
+	}
 }

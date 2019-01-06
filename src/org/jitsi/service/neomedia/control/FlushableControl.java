@@ -15,17 +15,16 @@
  */
 package org.jitsi.service.neomedia.control;
 
-import javax.media.*;
+import javax.media.Control;
 
 /**
  * An interface which allows to flush a buffer.
  *
  * @author Boris Grozev
  */
-public interface FlushableControl extends Control
-{
-    /**
-     * Flushes the buffer.
-     */
-    public void flush();
+public interface FlushableControl extends Control {
+	/**
+	 * Flushes the buffer.
+	 */
+	public void flush();
 }

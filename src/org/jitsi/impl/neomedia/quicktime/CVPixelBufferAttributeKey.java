@@ -15,41 +15,35 @@
  */
 package org.jitsi.impl.neomedia.quicktime;
 
-import org.jitsi.util.*;
+import org.jitsi.util.JNIUtils;
 
 /**
  * @author Lyubomir Marinov
  */
-public final class CVPixelBufferAttributeKey
-{
-    public static final long kCVPixelBufferHeightKey;
+public final class CVPixelBufferAttributeKey {
+	public static final long kCVPixelBufferHeightKey;
 
-    public static final long kCVPixelBufferPixelFormatTypeKey;
+	public static final long kCVPixelBufferPixelFormatTypeKey;
 
-    public static final long kCVPixelBufferWidthKey;
+	public static final long kCVPixelBufferWidthKey;
 
-    static
-    {
-        JNIUtils.loadLibrary(
-                "jnquicktime",
-                CVPixelBufferAttributeKey.class.getClassLoader());
+	static {
+		JNIUtils.loadLibrary("jnquicktime", CVPixelBufferAttributeKey.class.getClassLoader());
 
-        kCVPixelBufferHeightKey = kCVPixelBufferHeightKey();
-        kCVPixelBufferPixelFormatTypeKey = kCVPixelBufferPixelFormatTypeKey();
-        kCVPixelBufferWidthKey = kCVPixelBufferWidthKey();
-    }
+		kCVPixelBufferHeightKey = kCVPixelBufferHeightKey();
+		kCVPixelBufferPixelFormatTypeKey = kCVPixelBufferPixelFormatTypeKey();
+		kCVPixelBufferWidthKey = kCVPixelBufferWidthKey();
+	}
 
-    /**
-     * Prevents the initialization of <tt>CVPixelBufferAttributeKey</tt>
-     * instances.
-     */
-    private CVPixelBufferAttributeKey()
-    {
-    }
+	/**
+	 * Prevents the initialization of <tt>CVPixelBufferAttributeKey</tt> instances.
+	 */
+	private CVPixelBufferAttributeKey() {
+	}
 
-    private static native long kCVPixelBufferHeightKey();
+	private static native long kCVPixelBufferHeightKey();
 
-    private static native long kCVPixelBufferPixelFormatTypeKey();
+	private static native long kCVPixelBufferPixelFormatTypeKey();
 
-    private static native long kCVPixelBufferWidthKey();
+	private static native long kCVPixelBufferWidthKey();
 }

@@ -15,14 +15,17 @@
  */
 package org.jitsi.impl.neomedia.rtp.translator;
 
-import java.io.*;
-import java.lang.reflect.*;
+import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 
-import javax.media.protocol.*;
-import javax.media.rtp.*;
-import javax.media.rtp.rtcp.*;
+import javax.media.protocol.DataSource;
+import javax.media.rtp.Participant;
+import javax.media.rtp.SendStream;
+import javax.media.rtp.TransmissionStats;
+import javax.media.rtp.rtcp.SenderReport;
+import javax.media.rtp.rtcp.SourceDescription;
 
-import org.jitsi.impl.neomedia.rtp.*;
+import org.jitsi.impl.neomedia.rtp.StreamRTPManager;
 
 /**
  * Implements a <tt>SendStream</tt> which is an endpoint-specific view of an
@@ -32,124 +35,95 @@ import org.jitsi.impl.neomedia.rtp.*;
  *
  * @author Lyubomir Marinov
  */
-class SendStreamImpl
-    implements SendStream
-{
-    private boolean closed;
+class SendStreamImpl implements SendStream {
+	private boolean closed;
 
-    public final SendStreamDesc sendStreamDesc;
+	public final SendStreamDesc sendStreamDesc;
 
-    private boolean started;
+	private boolean started;
 
-    public final StreamRTPManager streamRTPManager;
+	public final StreamRTPManager streamRTPManager;
 
-    public SendStreamImpl(
-            StreamRTPManager streamRTPManager,
-            SendStreamDesc sendStreamDesc)
-    {
-        this.sendStreamDesc = sendStreamDesc;
-        this.streamRTPManager = streamRTPManager;
-    }
+	public SendStreamImpl(StreamRTPManager streamRTPManager, SendStreamDesc sendStreamDesc) {
+		this.sendStreamDesc = sendStreamDesc;
+		this.streamRTPManager = streamRTPManager;
+	}
 
-    @Override
-    public void close()
-    {
-        if (!closed)
-        {
-            try
-            {
-                if (started)
-                    stop();
-            }
-            catch (IOException ioe)
-            {
-                throw new UndeclaredThrowableException(ioe);
-            }
-            finally
-            {
-                sendStreamDesc.close(this);
-                closed = true;
-            }
-        }
-    }
+	@Override
+	public void close() {
+		if (!closed) {
+			try {
+				if (started)
+					stop();
+			} catch (IOException ioe) {
+				throw new UndeclaredThrowableException(ioe);
+			} finally {
+				sendStreamDesc.close(this);
+				closed = true;
+			}
+		}
+	}
 
-    @Override
-    public DataSource getDataSource()
-    {
-        return sendStreamDesc.sendStream.getDataSource();
-    }
+	@Override
+	public DataSource getDataSource() {
+		return sendStreamDesc.sendStream.getDataSource();
+	}
 
-    @Override
-    public Participant getParticipant()
-    {
-        return sendStreamDesc.sendStream.getParticipant();
-    }
+	@Override
+	public Participant getParticipant() {
+		return sendStreamDesc.sendStream.getParticipant();
+	}
 
-    @Override
-    public SenderReport getSenderReport()
-    {
-        return sendStreamDesc.sendStream.getSenderReport();
-    }
+	@Override
+	public SenderReport getSenderReport() {
+		return sendStreamDesc.sendStream.getSenderReport();
+	}
 
-    @Override
-    public TransmissionStats getSourceTransmissionStats()
-    {
-        return sendStreamDesc.sendStream.getSourceTransmissionStats();
-    }
+	@Override
+	public TransmissionStats getSourceTransmissionStats() {
+		return sendStreamDesc.sendStream.getSourceTransmissionStats();
+	}
 
-    @Override
-    public long getSSRC()
-    {
-        return sendStreamDesc.sendStream.getSSRC();
-    }
+	@Override
+	public long getSSRC() {
+		return sendStreamDesc.sendStream.getSSRC();
+	}
 
-    /**
-     * Not implemented because there are currently no uses of the underlying
-     * functionality.
-     */
-    @Override
-    public int setBitRate(int bitRate)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	/**
+	 * Not implemented because there are currently no uses of the underlying
+	 * functionality.
+	 */
+	@Override
+	public int setBitRate(int bitRate) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    /**
-     * Not implemented because there are currently no uses of the underlying
-     * functionality.
-     */
-    @Override
-    public void setSourceDescription(SourceDescription[] sourceDescription)
-    {
-        // TODO Auto-generated method stub
-    }
+	/**
+	 * Not implemented because there are currently no uses of the underlying
+	 * functionality.
+	 */
+	@Override
+	public void setSourceDescription(SourceDescription[] sourceDescription) {
+		// TODO Auto-generated method stub
+	}
 
-    @Override
-    public void start()
-        throws IOException
-    {
-        if (closed)
-        {
-            throw
-                new IOException(
-                        "Cannot start SendStream"
-                            + " after it has been closed.");
-        }
-        if (!started)
-        {
-            sendStreamDesc.start(this);
-            started = true;
-        }
-    }
+	@Override
+	public void start() throws IOException {
+		if (closed) {
+			throw new IOException("Cannot start SendStream" + " after it has been closed.");
+		}
+		if (!started) {
+			sendStreamDesc.start(this);
+			started = true;
+		}
+	}
 
-    @Override
-    public void stop()
-        throws IOException
-    {
-        if (!closed && started)
-        {
-            sendStreamDesc.stop(this);
-            started = false;
-        }
-    }
+	@Override
+	public void stop() throws IOException {
+		if (!closed && started) {
+			sendStreamDesc.stop(this);
+			started = false;
+		}
+	}
 }

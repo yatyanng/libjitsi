@@ -15,10 +15,12 @@
  */
 package org.jitsi.impl.neomedia.device;
 
-import javax.media.*;
-import javax.media.protocol.*;
+import javax.media.Player;
+import javax.media.Processor;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
 
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.MediaDirection;
 
 /**
  * Implements a <tt>MediaDevice</tt> which provides silence in the form of audio
@@ -28,95 +30,84 @@ import org.jitsi.service.neomedia.*;
  * @author Lyubomir Marinov
  * @author Boris Grozev
  */
-public class AudioSilenceMediaDevice
-    extends AudioMediaDeviceImpl
-{
-    /**
-     * The value to pass as the {@code clockOnly} flag to {@link
-     * AudioSilenceCaptureDevice} when creating a {@link CaptureDevice}.
-     * See {@link AudioSilenceCaptureDevice#clockOnly}.
-     */
-    private boolean clockOnly = true;
+public class AudioSilenceMediaDevice extends AudioMediaDeviceImpl {
+	/**
+	 * The value to pass as the {@code clockOnly} flag to
+	 * {@link AudioSilenceCaptureDevice} when creating a {@link CaptureDevice}. See
+	 * {@link AudioSilenceCaptureDevice#clockOnly}.
+	 */
+	private boolean clockOnly = true;
 
-    /**
-     * Initializes a new {@link AudioSilenceMediaDevice} instance.
-     */
-    public AudioSilenceMediaDevice()
-    {
-    }
+	/**
+	 * Initializes a new {@link AudioSilenceMediaDevice} instance.
+	 */
+	public AudioSilenceMediaDevice() {
+	}
 
-    /**
-     * Initializes a new {@link AudioSilenceMediaDevice} instance.
-     * @param clockOnly the value to set to {@link #clockOnly}.
-     */
-    public AudioSilenceMediaDevice(boolean clockOnly)
-    {
-        this.clockOnly = clockOnly;
-    }
+	/**
+	 * Initializes a new {@link AudioSilenceMediaDevice} instance.
+	 * 
+	 * @param clockOnly the value to set to {@link #clockOnly}.
+	 */
+	public AudioSilenceMediaDevice(boolean clockOnly) {
+		this.clockOnly = clockOnly;
+	}
 
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides the super implementation to initialize a <tt>CaptureDevice</tt>
-     * without asking FMJ to initialize one for a <tt>CaptureDeviceInfo</tt>.
-     */
-    @Override
-    protected CaptureDevice createCaptureDevice()
-    {
-        return new AudioSilenceCaptureDevice(clockOnly);
-    }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Overrides the super implementation to initialize a <tt>CaptureDevice</tt>
+	 * without asking FMJ to initialize one for a <tt>CaptureDeviceInfo</tt>.
+	 */
+	@Override
+	protected CaptureDevice createCaptureDevice() {
+		return new AudioSilenceCaptureDevice(clockOnly);
+	}
 
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides the super implementation to disable the very playback because
-     * Jitsi Videobridge is a server-side technology.
-     */
-    @Override
-    protected Processor createPlayer(DataSource dataSource)
-    {
-        return null;
-    }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Overrides the super implementation to disable the very playback because Jitsi
+	 * Videobridge is a server-side technology.
+	 */
+	@Override
+	protected Processor createPlayer(DataSource dataSource) {
+		return null;
+	}
 
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides the super implementation to initialize a
-     * <tt>MediaDeviceSession</tt> which disables the very playback because
-     * Jitsi Videobridge is a server-side technology.
-     */
-    @Override
-    public MediaDeviceSession createSession()
-    {
-        return
-            new AudioMediaDeviceSession(this)
-                    {
-                        /**
-                         * {@inheritDoc}
-                         *
-                         * Overrides the super implementation to disable the
-                         * very playback because Jitsi Videobridge is a
-                         * server-side technology.
-                         */
-                        @Override
-                        protected Player createPlayer(DataSource dataSource)
-                        {
-                            return null;
-                        }
-                    };
-    }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Overrides the super implementation to initialize a
+	 * <tt>MediaDeviceSession</tt> which disables the very playback because Jitsi
+	 * Videobridge is a server-side technology.
+	 */
+	@Override
+	public MediaDeviceSession createSession() {
+		return new AudioMediaDeviceSession(this) {
+			/**
+			 * {@inheritDoc}
+			 *
+			 * Overrides the super implementation to disable the very playback because Jitsi
+			 * Videobridge is a server-side technology.
+			 */
+			@Override
+			protected Player createPlayer(DataSource dataSource) {
+				return null;
+			}
+		};
+	}
 
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides the super implementation to always return
-     * {@link MediaDirection#SENDRECV} because this instance stands for a relay
-     * and because the super bases the <tt>MediaDirection</tt> on the
-     * <tt>CaptureDeviceInfo</tt> which this instance does not have.
-     */
-    @Override
-    public MediaDirection getDirection()
-    {
-        return MediaDirection.SENDRECV;
-    }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Overrides the super implementation to always return
+	 * {@link MediaDirection#SENDRECV} because this instance stands for a relay and
+	 * because the super bases the <tt>MediaDirection</tt> on the
+	 * <tt>CaptureDeviceInfo</tt> which this instance does not have.
+	 */
+	@Override
+	public MediaDirection getDirection() {
+		return MediaDirection.SENDRECV;
+	}
 }

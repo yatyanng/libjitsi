@@ -20,16 +20,16 @@ package org.jitsi.impl.neomedia.rtp.remotebitrateestimator;
  *
  * @author Lyubomir Marinov
  */
-enum BandwidthUsage
-{
-    kBwNormal(0), kBwUnderusing(-1), kBwOverusing(1);
+enum BandwidthUsage {
+	kBwNormal(0), kBwUnderusing(-1), kBwOverusing(1);
 
-    private int value;
-    BandwidthUsage(int value){
-        this.value = value;
-    }
+	private int value;
 
-    public int getValue() {
-        return value;
-    }
+	BandwidthUsage(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
 }

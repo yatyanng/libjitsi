@@ -16,15 +16,17 @@
 
 package org.jitsi.impl.neomedia.jmfext.media.protocol.rtpdumpfile;
 
-import javax.media.*;
-import javax.media.control.*;
-import javax.media.format.*;
+import java.io.IOException;
 
-import org.jitsi.impl.neomedia.jmfext.media.protocol.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.control.FormatControl;
+import javax.media.format.AudioFormat;
+import javax.media.format.VideoFormat;
 
-import java.io.*;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferStream;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.Logger;
 
 /**
  * Implements a <tt>PullBufferStream</tt> which read an rtpdump file to generate
@@ -32,128 +34,109 @@ import java.io.*;
  * 
  * @author Thomas Kuntz
  */
-public class RtpdumpStream
-    extends AbstractVideoPullBufferStream<DataSource>
-{
-    /**
-     * The <tt>Logger</tt> used by <tt>RtpdumpStream</tt> and its instances
-     * for logging output.
-     */
-    private static final Logger logger
-            = Logger.getLogger(RtpdumpStream.class);
+public class RtpdumpStream extends AbstractVideoPullBufferStream<DataSource> {
+	/**
+	 * The <tt>Logger</tt> used by <tt>RtpdumpStream</tt> and its instances for
+	 * logging output.
+	 */
+	private static final Logger logger = Logger.getLogger(RtpdumpStream.class);
 
-    /**
-     * The <tt>RawPacketScheduler</tt> responsible for throttling our RTP packet
-     * reading.
-     */
-    private final RawPacketScheduler rawPacketScheduler;
+	/**
+	 * The <tt>RawPacketScheduler</tt> responsible for throttling our RTP packet
+	 * reading.
+	 */
+	private final RawPacketScheduler rawPacketScheduler;
 
-    /**
-     * Boolean indicating if the last call to <tt>doRead</tt> return a marked
-     * rtp packet (to know if <tt>timestamp</tt> needs to be updated).
-     */
-    private boolean lastReadWasMarked = true;
+	/**
+	 * Boolean indicating if the last call to <tt>doRead</tt> return a marked rtp
+	 * packet (to know if <tt>timestamp</tt> needs to be updated).
+	 */
+	private boolean lastReadWasMarked = true;
 
-    /**
-     * The <tt>RtpdumpFileReader</tt> used by this stream to get the rtp payload.
-     */
-    private RtpdumpFileReader rtpFileReader;
+	/**
+	 * The <tt>RtpdumpFileReader</tt> used by this stream to get the rtp payload.
+	 */
+	private RtpdumpFileReader rtpFileReader;
 
-    /**
-     * The timestamp to use for the timestamp of the next <tt>Buffer</tt> filled
-     * in {@link #doRead(javax.media.Buffer)}
-     */
-    private long timestamp;
+	/**
+	 * The timestamp to use for the timestamp of the next <tt>Buffer</tt> filled in
+	 * {@link #doRead(javax.media.Buffer)}
+	 */
+	private long timestamp;
 
-    /**
-     * Initializes a new <tt>RtpdumpStream</tt> instance
-     *
-     * @param dataSource the <tt>DataSource</tt> which is creating the new
-     * instance so that it becomes one of its <tt>streams</tt>
-     * @param formatControl the <tt>FormatControl</tt> of the new instance which
-     * is to specify the format in which it is to provide its media data
-     */
-    RtpdumpStream(DataSource dataSource, FormatControl formatControl)
-    {
-        super(dataSource, formatControl);
+	/**
+	 * Initializes a new <tt>RtpdumpStream</tt> instance
+	 *
+	 * @param dataSource    the <tt>DataSource</tt> which is creating the new
+	 *                      instance so that it becomes one of its <tt>streams</tt>
+	 * @param formatControl the <tt>FormatControl</tt> of the new instance which is
+	 *                      to specify the format in which it is to provide its
+	 *                      media data
+	 */
+	RtpdumpStream(DataSource dataSource, FormatControl formatControl) {
+		super(dataSource, formatControl);
 
-        /*
-         * NOTE: We use the sampleRate or frameRate field of the format to
-         * piggyback the RTP clock rate. See
-         * RtpdumpMediaDevice#createRtpdumpMediaDevice.
-         */
-        Format format = getFormat();
-        long clockRate;
-        if (format instanceof AudioFormat)
-        {
-            clockRate = (long) ((AudioFormat) format).getSampleRate();
-        }
-        else if (format instanceof VideoFormat)
-        {
-            clockRate = (long) ((VideoFormat) format).getFrameRate();
-        }
-        else
-        {
-            logger.warn("Unknown format. Creating RtpdumpStream with clock" +
-                                "rate 1 000 000 000.");
-            clockRate = 1000 * 1000 * 1000;
-        }
+		/*
+		 * NOTE: We use the sampleRate or frameRate field of the format to piggyback the
+		 * RTP clock rate. See RtpdumpMediaDevice#createRtpdumpMediaDevice.
+		 */
+		Format format = getFormat();
+		long clockRate;
+		if (format instanceof AudioFormat) {
+			clockRate = (long) ((AudioFormat) format).getSampleRate();
+		} else if (format instanceof VideoFormat) {
+			clockRate = (long) ((VideoFormat) format).getFrameRate();
+		} else {
+			logger.warn("Unknown format. Creating RtpdumpStream with clock" + "rate 1 000 000 000.");
+			clockRate = 1000 * 1000 * 1000;
+		}
 
-        this.rawPacketScheduler =  new RawPacketScheduler(clockRate);
-        String rtpdumpFilePath = dataSource.getLocator().getRemainder();
-        this.rtpFileReader = new RtpdumpFileReader(rtpdumpFilePath);
-    }
+		this.rawPacketScheduler = new RawPacketScheduler(clockRate);
+		String rtpdumpFilePath = dataSource.getLocator().getRemainder();
+		this.rtpFileReader = new RtpdumpFileReader(rtpdumpFilePath);
+	}
 
-    /**
-     * Reads available media data from this instance into a specific
-     * <tt>Buffer</tt>.
-     *
-     * @param buffer the <tt>Buffer</tt> to write the available media data
-     * into
-     * @throws IOException if an I/O error has prevented the reading of
-     * available media data from this instance into the specified
-     * <tt>Buffer</tt>
-     */
-    @Override
-    protected void doRead(Buffer buffer)
-        throws IOException
-    {
-        Format format;
+	/**
+	 * Reads available media data from this instance into a specific
+	 * <tt>Buffer</tt>.
+	 *
+	 * @param buffer the <tt>Buffer</tt> to write the available media data into
+	 * @throws IOException if an I/O error has prevented the reading of available
+	 *                     media data from this instance into the specified
+	 *                     <tt>Buffer</tt>
+	 */
+	@Override
+	protected void doRead(Buffer buffer) throws IOException {
+		Format format;
 
-        format = buffer.getFormat();
-        if (format == null)
-        {
-            format = getFormat();
-            if (format != null)
-                buffer.setFormat(format);
-        }
+		format = buffer.getFormat();
+		if (format == null) {
+			format = getFormat();
+			if (format != null)
+				buffer.setFormat(format);
+		}
 
-        RawPacket rtpPacket = rtpFileReader.getNextPacket(true);
-        byte[] data = rtpPacket.getPayload(); 
+		RawPacket rtpPacket = rtpFileReader.getNextPacket(true);
+		byte[] data = rtpPacket.getPayload();
 
-        buffer.setData(data);
-        buffer.setOffset(rtpPacket.getOffset());
-        buffer.setLength(rtpPacket.getPayloadLength());
+		buffer.setData(data);
+		buffer.setOffset(rtpPacket.getOffset());
+		buffer.setLength(rtpPacket.getPayloadLength());
 
-        buffer.setFlags(Buffer.FLAG_SYSTEM_TIME | Buffer.FLAG_LIVE_DATA);
-        if(lastReadWasMarked)
-        {
-            timestamp = System.nanoTime();
-        }
-        lastReadWasMarked = rtpPacket.isPacketMarked();
-        if(lastReadWasMarked)
-        {
-            buffer.setFlags(buffer.getFlags() | Buffer.FLAG_RTP_MARKER);
-        }
-        buffer.setTimeStamp(timestamp);
+		buffer.setFlags(Buffer.FLAG_SYSTEM_TIME | Buffer.FLAG_LIVE_DATA);
+		if (lastReadWasMarked) {
+			timestamp = System.nanoTime();
+		}
+		lastReadWasMarked = rtpPacket.isPacketMarked();
+		if (lastReadWasMarked) {
+			buffer.setFlags(buffer.getFlags() | Buffer.FLAG_RTP_MARKER);
+		}
+		buffer.setTimeStamp(timestamp);
 
-        try
-        {
-            rawPacketScheduler.schedule(rtpPacket);
-        }
-        catch (InterruptedException e)
-        {
+		try {
+			rawPacketScheduler.schedule(rtpPacket);
+		} catch (InterruptedException e) {
 
-        }
-    }
+		}
+	}
 }

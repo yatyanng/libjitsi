@@ -15,8 +15,9 @@
  */
 package org.jitsi.util.function;
 
-import net.sf.fmj.media.rtp.*;
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.RawPacket;
+
+import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 /**
  * A <tt>Function</tt> that produces <tt>RawPacket</tt>s from
@@ -24,25 +25,21 @@ import org.jitsi.service.neomedia.*;
  *
  * @author George Politis
  */
-public class RTCPGenerator
-    extends AbstractFunction<RTCPCompoundPacket, RawPacket>
-{
-    @Override
-    public RawPacket apply(RTCPCompoundPacket in)
-    {
-        if (in == null)
-        {
-            return null;
-        }
+public class RTCPGenerator extends AbstractFunction<RTCPCompoundPacket, RawPacket> {
+	@Override
+	public RawPacket apply(RTCPCompoundPacket in) {
+		if (in == null) {
+			return null;
+		}
 
-        // Assemble the RTP packet.
-        int len = in.calcLength();
+		// Assemble the RTP packet.
+		int len = in.calcLength();
 
-        // TODO We need to be able to re-use original RawPacket buffer.
-        in.assemble(len, false);
+		// TODO We need to be able to re-use original RawPacket buffer.
+		in.assemble(len, false);
 
-        byte[] buf = in.data;
+		byte[] buf = in.data;
 
-        return new RawPacket(buf, 0, len);
-    }
+		return new RawPacket(buf, 0, len);
+	}
 }

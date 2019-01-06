@@ -20,19 +20,16 @@ package org.jitsi.impl.neomedia.quicktime;
  *
  * @author Lyubomir Marinov
  */
-public class QTCaptureInput
-    extends NSObject
-{
+public class QTCaptureInput extends NSObject {
 
-    /**
-     * Initializes a new <tt>QTCaptureInput</tt> instance which is to represent
-     * a specific QTKit <tt>QTCaptureInput</tt> object.
-     *
-     * @param ptr the pointer to the QTKit <tt>QTCaptureInput</tt> object to be
-     * represented by the new instance
-     */
-    public QTCaptureInput(long ptr)
-    {
-        super(ptr);
-    }
+	/**
+	 * Initializes a new <tt>QTCaptureInput</tt> instance which is to represent a
+	 * specific QTKit <tt>QTCaptureInput</tt> object.
+	 *
+	 * @param ptr the pointer to the QTKit <tt>QTCaptureInput</tt> object to be
+	 *            represented by the new instance
+	 */
+	public QTCaptureInput(long ptr) {
+		super(ptr);
+	}
 }

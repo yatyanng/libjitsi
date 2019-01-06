@@ -20,9 +20,6 @@ package org.jitsi.impl.neomedia.rtp.remotebitrateestimator;
  *
  * @author Lyubomir Marinov
  */
-enum RateControlState
-{
-    kRcHold,
-    kRcIncrease,
-    kRcDecrease
+enum RateControlState {
+	kRcHold, kRcIncrease, kRcDecrease
 }

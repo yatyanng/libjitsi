@@ -15,25 +15,19 @@
  */
 package org.jitsi.util.function;
 
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.RawPacket;
 
 /**
  * @author George Politis
  */
-public abstract class RawPacketTransformation
-    extends AbstractFunction<RawPacket, RawPacket>
-{
-    /**
-     * An identity {@link RawPacketTransformation} that returns the original
-     * packet.
-     */
-    public final static RawPacketTransformation identity
-        = new RawPacketTransformation()
-    {
-        @Override
-        public RawPacket apply(RawPacket rawPacket)
-        {
-            return rawPacket;
-        }
-    };
+public abstract class RawPacketTransformation extends AbstractFunction<RawPacket, RawPacket> {
+	/**
+	 * An identity {@link RawPacketTransformation} that returns the original packet.
+	 */
+	public final static RawPacketTransformation identity = new RawPacketTransformation() {
+		@Override
+		public RawPacket apply(RawPacket rawPacket) {
+			return rawPacket;
+		}
+	};
 }

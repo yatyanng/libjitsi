@@ -16,16 +16,13 @@
 package org.jitsi.service.neomedia.stats;
 
 /**
- * Extends {@link TrackStats} with methods specific for streams that we
- * send.
+ * Extends {@link TrackStats} with methods specific for streams that we send.
  *
  * @author Boris Grozev
  */
-public interface SendTrackStats
-    extends TrackStats
-{
-    /**
-     * @return the highest sequence number that was sent out.
-     */
-    int getHighestSent();
+public interface SendTrackStats extends TrackStats {
+	/**
+	 * @return the highest sequence number that was sent out.
+	 */
+	int getHighestSent();
 }

@@ -15,11 +15,11 @@
  */
 package org.jitsi.util;
 
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Basic test for {@link PasswordUtil} class.
@@ -27,24 +27,15 @@ import static org.junit.Assert.*;
  * @author Pawel Domas
  */
 @RunWith(JUnit4.class)
-public class PasswordUtilTest
-{
-    @Test
-    public void testShadowPassword()
-    {
-        String cmdLine = "AppMain org.jitsi.videobridge.Main" +
-            " --host=example.com --secret3=blablabla --port=5347" +
-            " -secret=pass1 --subdomain=jvb3 --apis=rest,xmpp" +
-            " secret2=23pass4234";
+public class PasswordUtilTest {
+	@Test
+	public void testShadowPassword() {
+		String cmdLine = "AppMain org.jitsi.videobridge.Main" + " --host=example.com --secret3=blablabla --port=5347"
+				+ " -secret=pass1 --subdomain=jvb3 --apis=rest,xmpp" + " secret2=23pass4234";
 
-        cmdLine = PasswordUtil.replacePasswords(
-            cmdLine,
-            new String[]{"", "secret3", "secret", "secret2"});
+		cmdLine = PasswordUtil.replacePasswords(cmdLine, new String[] { "", "secret3", "secret", "secret2" });
 
-        assertEquals("AppMain org.jitsi.videobridge.Main" +
-                " --host=example.com --secret3=X --port=5347" +
-                " -secret=X --subdomain=jvb3 --apis=rest,xmpp" +
-                " secret2=X",
-            cmdLine);
-    }
+		assertEquals("AppMain org.jitsi.videobridge.Main" + " --host=example.com --secret3=X --port=5347"
+				+ " -secret=X --subdomain=jvb3 --apis=rest,xmpp" + " secret2=X", cmdLine);
+	}
 }

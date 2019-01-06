@@ -22,32 +22,28 @@ package org.jitsi.impl.neomedia.device;
  *
  * @author Vincent Lucas
  */
-public class NotifyDevices
-    extends PlaybackDevices
-{
-    /**
-     * The property of the notify devices.
-     */
-    public static final String PROP_DEVICE = "notifyDevice";
+public class NotifyDevices extends PlaybackDevices {
+	/**
+	 * The property of the notify devices.
+	 */
+	public static final String PROP_DEVICE = "notifyDevice";
 
-    /**
-     * Initializes the notify device list management.
-     *
-     * @param audioSystem The audio system managing this notify device list.
-     */
-    public NotifyDevices(AudioSystem audioSystem)
-    {
-        super(audioSystem);
-    }
+	/**
+	 * Initializes the notify device list management.
+	 *
+	 * @param audioSystem The audio system managing this notify device list.
+	 */
+	public NotifyDevices(AudioSystem audioSystem) {
+		super(audioSystem);
+	}
 
-    /**
-     * Returns the property of the capture devices.
-     *
-     * @return The property of the capture devices.
-     */
-    @Override
-    protected String getPropDevice()
-    {
-        return PROP_DEVICE;
-    }
+	/**
+	 * Returns the property of the capture devices.
+	 *
+	 * @return The property of the capture devices.
+	 */
+	@Override
+	protected String getPropDevice() {
+		return PROP_DEVICE;
+	}
 }

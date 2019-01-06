@@ -24,16 +24,14 @@ package org.jitsi.util.concurrent;
  * @author Lyubomir Marinov
  * @author George Politis
  */
-public interface RecurringRunnable
-    extends Runnable
-{
-    /**
-     * Returns the number of milliseconds until this instance wants a worker
-     * thread to call {@link #run()}. The method is called on the same
-     * worker thread as Process will be called on.
-     *
-     * @return the number of milliseconds until this instance wants a worker
-     * thread to call {@link #run()}
-     */
-    long getTimeUntilNextRun();
+public interface RecurringRunnable extends Runnable {
+	/**
+	 * Returns the number of milliseconds until this instance wants a worker thread
+	 * to call {@link #run()}. The method is called on the same worker thread as
+	 * Process will be called on.
+	 *
+	 * @return the number of milliseconds until this instance wants a worker thread
+	 *         to call {@link #run()}
+	 */
+	long getTimeUntilNextRun();
 }

@@ -20,15 +20,14 @@ package org.jitsi.service.neomedia.event;
  *
  * @author Hristo Terezov
  */
-public interface RTCPFeedbackMessageCreateListener
-{
-    /**
-     * Notifies this <tt>RTCPFeedbackCreateListener</tt> that a
-     * <tt>RTCPFeedbackMessageListener</tt> is created.
-     *
-     * @param rtcpFeedbackMessageListener the created
-     * <tt>RTCPFeedbackMessageListener</tt> instance
-     */
-    public void onRTCPFeedbackMessageCreate(
-            RTCPFeedbackMessageListener rtcpFeedbackMessageListener);
+public interface RTCPFeedbackMessageCreateListener {
+	/**
+	 * Notifies this <tt>RTCPFeedbackCreateListener</tt> that a
+	 * <tt>RTCPFeedbackMessageListener</tt> is created.
+	 *
+	 * @param rtcpFeedbackMessageListener the created
+	 *                                    <tt>RTCPFeedbackMessageListener</tt>
+	 *                                    instance
+	 */
+	public void onRTCPFeedbackMessageCreate(RTCPFeedbackMessageListener rtcpFeedbackMessageListener);
 }

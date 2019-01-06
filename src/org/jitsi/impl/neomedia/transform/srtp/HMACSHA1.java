@@ -15,34 +15,29 @@
  */
 package org.jitsi.impl.neomedia.transform.srtp;
 
-import org.bouncycastle.crypto.*;
-import org.bouncycastle.crypto.digests.*;
-import org.bouncycastle.crypto.macs.*;
+import org.bouncycastle.crypto.Mac;
+import org.bouncycastle.crypto.digests.SHA1Digest;
+import org.bouncycastle.crypto.macs.HMac;
 
 /**
  * Implements a factory for an HMAC-SHA1 <tt>org.bouncycastle.crypto.Mac</tt>.
  *
  * @author Lyubomir Marinov
  */
-public class HMACSHA1
-{
-    /**
-     * Initializes a new <tt>org.bouncycastle.crypto.Mac</tt> instance which
-     * implements a keyed-hash message authentication code (HMAC) with SHA-1.
-     *
-     * @return a new <tt>org.bouncycastle.crypto.Mac</tt> instance which
-     * implements a keyed-hash message authentication code (HMAC) with SHA-1
-     */
-    public static Mac createMac()
-    {
-        if (OpenSSLWrapperLoader.isLoaded())
-        {
-            return new OpenSSLHMAC(OpenSSLHMAC.SHA1);
-        }
-        else
-        {
-            // Fallback to BouncyCastle.
-            return new HMac(new SHA1Digest());
-        }
-    }
+public class HMACSHA1 {
+	/**
+	 * Initializes a new <tt>org.bouncycastle.crypto.Mac</tt> instance which
+	 * implements a keyed-hash message authentication code (HMAC) with SHA-1.
+	 *
+	 * @return a new <tt>org.bouncycastle.crypto.Mac</tt> instance which implements
+	 *         a keyed-hash message authentication code (HMAC) with SHA-1
+	 */
+	public static Mac createMac() {
+		if (OpenSSLWrapperLoader.isLoaded()) {
+			return new OpenSSLHMAC(OpenSSLHMAC.SHA1);
+		} else {
+			// Fallback to BouncyCastle.
+			return new HMac(new SHA1Digest());
+		}
+	}
 }

@@ -21,17 +21,17 @@ package org.jitsi.service.neomedia.recording;
  *
  * @author Boris Grozev
  */
-public interface RecorderEventHandler
-{
-    /**
-     * Handle a specific <tt>RecorderEvent</tt>
-     * @param ev the event to handle.
-     * @return
-     */
-    public boolean handleEvent(RecorderEvent ev);
+public interface RecorderEventHandler {
+	/**
+	 * Handle a specific <tt>RecorderEvent</tt>
+	 * 
+	 * @param ev the event to handle.
+	 * @return
+	 */
+	public boolean handleEvent(RecorderEvent ev);
 
-    /**
-     * Closes the <tt>RecorderEventHandler</tt>.
-     */
-    public void close();
+	/**
+	 * Closes the <tt>RecorderEventHandler</tt>.
+	 */
+	public void close();
 }

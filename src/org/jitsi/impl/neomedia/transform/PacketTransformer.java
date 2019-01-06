@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.transform;
 
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.RawPacket;
 
 /**
  * Encapsulate the concept of packet transformation. Given an array of packets,
@@ -25,29 +25,27 @@ import org.jitsi.service.neomedia.*;
  * @author Bing SU (nova.su@gmail.com)
  * @author Boris Grozev
  */
-public interface PacketTransformer
-{
-    /**
-     * Closes this <tt>PacketTransformer</tt> i.e. releases the resources
-     * allocated by it and prepares it for garbage collection.
-     */
-    public void close();
+public interface PacketTransformer {
+	/**
+	 * Closes this <tt>PacketTransformer</tt> i.e. releases the resources allocated
+	 * by it and prepares it for garbage collection.
+	 */
+	public void close();
 
-    /**
-     * Reverse-transforms each packet in an array of packets. Null values
-     * must be ignored.
-     *
-     * @param pkts the transformed packets to be restored.
-     * @return the restored packets.
-     */
-    public RawPacket[] reverseTransform(RawPacket[] pkts);
+	/**
+	 * Reverse-transforms each packet in an array of packets. Null values must be
+	 * ignored.
+	 *
+	 * @param pkts the transformed packets to be restored.
+	 * @return the restored packets.
+	 */
+	public RawPacket[] reverseTransform(RawPacket[] pkts);
 
-    /**
-     * Transforms each packet in an array of packets. Null values must be
-     * ignored.
-     *
-     * @param pkts the packets to be transformed
-     * @return the transformed packets
-     */
-    public RawPacket[] transform(RawPacket[] pkts);
+	/**
+	 * Transforms each packet in an array of packets. Null values must be ignored.
+	 *
+	 * @param pkts the packets to be transformed
+	 * @return the transformed packets
+	 */
+	public RawPacket[] transform(RawPacket[] pkts);
 }

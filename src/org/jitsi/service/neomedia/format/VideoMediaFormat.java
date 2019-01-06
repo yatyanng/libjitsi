@@ -15,7 +15,7 @@
  */
 package org.jitsi.service.neomedia.format;
 
-import java.awt.*;
+import java.awt.Dimension;
 
 /**
  * The interface represents a video format. Video formats characterize video
@@ -24,22 +24,19 @@ import java.awt.*;
  *
  * @author Emil Ivov
  */
-public interface VideoMediaFormat
-    extends MediaFormat
-{
-    /**
-     * Returns the size of the image that this <tt>VideoMediaFormat</tt>
-     * describes.
-     *
-     * @return a <tt>java.awt.Dimension</tt> instance indicating the image size
-     * (in pixels) of this <tt>VideoMediaFormat</tt>.
-     */
-    public Dimension getSize();
+public interface VideoMediaFormat extends MediaFormat {
+	/**
+	 * Returns the size of the image that this <tt>VideoMediaFormat</tt> describes.
+	 *
+	 * @return a <tt>java.awt.Dimension</tt> instance indicating the image size (in
+	 *         pixels) of this <tt>VideoMediaFormat</tt>.
+	 */
+	public Dimension getSize();
 
-    /**
-     * Returns the frame rate associated with this <tt>MediaFormat</tt>.
-     *
-     * @return The frame rate associated with this format.
-     */
-    public float getFrameRate();
+	/**
+	 * Returns the frame rate associated with this <tt>MediaFormat</tt>.
+	 *
+	 * @return The frame rate associated with this format.
+	 */
+	public float getFrameRate();
 }

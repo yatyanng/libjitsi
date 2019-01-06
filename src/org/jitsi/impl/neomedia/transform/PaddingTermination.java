@@ -15,11 +15,14 @@
  */
 package org.jitsi.impl.neomedia.transform;
 
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
-import java.util.*;
+import org.jitsi.impl.neomedia.RTPPacketPredicate;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.LRUCache;
 
 /**
  * De-duplicates RTP packets from incoming RTP streams. A more space-efficient
@@ -29,72 +32,62 @@ import java.util.*;
  *
  * @author George Politis
  */
-public class PaddingTermination
-    extends SinglePacketTransformerAdapter
-    implements TransformEngine
-{
-    /**
-     * The size of the seen sequence numbers set to hold per SSRC. As long as
-     * Chrome does not probe with ancient packets (> 5 seconds (300 packets per
-     * second) this size should be a sufficiently large size to prevent padding
-     * packets.
-     */
-    private static final int SEEN_SET_SZ = 1500;
+public class PaddingTermination extends SinglePacketTransformerAdapter implements TransformEngine {
+	/**
+	 * The size of the seen sequence numbers set to hold per SSRC. As long as Chrome
+	 * does not probe with ancient packets (> 5 seconds (300 packets per second)
+	 * this size should be a sufficiently large size to prevent padding packets.
+	 */
+	private static final int SEEN_SET_SZ = 1500;
 
-    /**
-     * Ctor.
-     */
-    public PaddingTermination()
-    {
-        super(RTPPacketPredicate.INSTANCE);
-    }
+	/**
+	 * Ctor.
+	 */
+	public PaddingTermination() {
+		super(RTPPacketPredicate.INSTANCE);
+	}
 
-    /**
-     * The {@code ReplayContext} for every SSRC that this instance has seen.
-     */
-    private final Map<Long, Set<Integer>> replayContexts = new TreeMap<>();
+	/**
+	 * The {@code ReplayContext} for every SSRC that this instance has seen.
+	 */
+	private final Map<Long, Set<Integer>> replayContexts = new TreeMap<>();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTPTransformer()
-    {
-        return this;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTPTransformer() {
+		return this;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTCPTransformer()
-    {
-        return null;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTCPTransformer() {
+		return null;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public RawPacket reverseTransform(RawPacket pkt)
-    {
-        Long mediaSSRC = pkt.getSSRCAsLong();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public RawPacket reverseTransform(RawPacket pkt) {
+		Long mediaSSRC = pkt.getSSRCAsLong();
 
-        // NOTE dropping padding from the main RTP stream is not supported
-        // because we can't rewrite to hide the gaps. Padding packets in the
-        // RTX stream are detected and killed in the RtxTransformer, so this
-        // instance should not see any RTX packets (it's after RTX in the
-        // chain).
-        Set<Integer> replayContext = replayContexts.get(mediaSSRC);
-        if (replayContext == null)
-        {
-            replayContext = Collections.newSetFromMap(
-                new LRUCache<Integer, Boolean>(SEEN_SET_SZ));
+		// NOTE dropping padding from the main RTP stream is not supported
+		// because we can't rewrite to hide the gaps. Padding packets in the
+		// RTX stream are detected and killed in the RtxTransformer, so this
+		// instance should not see any RTX packets (it's after RTX in the
+		// chain).
+		Set<Integer> replayContext = replayContexts.get(mediaSSRC);
+		if (replayContext == null) {
+			replayContext = Collections.newSetFromMap(new LRUCache<Integer, Boolean>(SEEN_SET_SZ));
 
-            replayContexts.put(mediaSSRC, replayContext);
-        }
+			replayContexts.put(mediaSSRC, replayContext);
+		}
 
-        return replayContext.add(pkt.getSequenceNumber()) ? pkt : null;
-    }
+		return replayContext.add(pkt.getSequenceNumber()) ? pkt : null;
+	}
 
 }

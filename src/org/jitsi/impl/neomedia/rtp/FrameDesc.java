@@ -15,9 +15,11 @@
  */
 package org.jitsi.impl.neomedia.rtp;
 
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import org.jitsi.impl.neomedia.MediaStreamImpl;
+import org.jitsi.impl.neomedia.RTPPacketPredicate;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.Logger;
+import org.jitsi.util.RTPUtils;
 
 /**
  * Describes a frame of an RTP stream.
@@ -26,322 +28,281 @@ import org.jitsi.util.*;
  *
  * @author George Politis
  */
-public class FrameDesc
-{
-    /**
-     * The {@link Logger} used by the {@link FrameDesc} class to print
-     * debug information.
-     */
-    private static final Logger logger
-        = Logger.getLogger(FrameDesc.class);
+public class FrameDesc {
+	/**
+	 * The {@link Logger} used by the {@link FrameDesc} class to print debug
+	 * information.
+	 */
+	private static final Logger logger = Logger.getLogger(FrameDesc.class);
 
-    /**
-     * The time in (millis) when the first packet of this frame was received.
-     * Currently used in stream suspension detection.
-     */
-    private final long receivedMs;
+	/**
+	 * The time in (millis) when the first packet of this frame was received.
+	 * Currently used in stream suspension detection.
+	 */
+	private final long receivedMs;
 
-    /**
-     * The {@link RTPEncodingDesc} that this {@link FrameDesc} belongs to.
-     */
-    private final RTPEncodingDesc rtpEncoding;
+	/**
+	 * The {@link RTPEncodingDesc} that this {@link FrameDesc} belongs to.
+	 */
+	private final RTPEncodingDesc rtpEncoding;
 
-    /**
-     * The RTP timestamp of this frame.
-     */
-    private final long ts;
+	/**
+	 * The RTP timestamp of this frame.
+	 */
+	private final long ts;
 
-    /**
-     * A boolean indicating whether or not this frame is independent or not
-     * (e.g. VP8 key frame).
-     */
-    private Boolean independent;
+	/**
+	 * A boolean indicating whether or not this frame is independent or not (e.g.
+	 * VP8 key frame).
+	 */
+	private Boolean independent;
 
-    /**
-     * A boolean that indicates whether or not we can read the frame boundaries
-     * of a frame.
-     *
-     * FIXME this and the method isStartOfFrame and isEndOfFrame need to be
-     * in the same place.
-     */
-    private final boolean supportsFrameBoundaries;
+	/**
+	 * A boolean that indicates whether or not we can read the frame boundaries of a
+	 * frame.
+	 *
+	 * FIXME this and the method isStartOfFrame and isEndOfFrame need to be in the
+	 * same place.
+	 */
+	private final boolean supportsFrameBoundaries;
 
-    /**
-     * The minimum sequence number that we've seen for this source frame.
-     */
-    private int minSeen = -1;
+	/**
+	 * The minimum sequence number that we've seen for this source frame.
+	 */
+	private int minSeen = -1;
 
-    /**
-     * The maximum sequence number that we've seen for this source frame.
-     */
-    private int maxSeen = -1;
+	/**
+	 * The maximum sequence number that we've seen for this source frame.
+	 */
+	private int maxSeen = -1;
 
-    /**
-     * The start sequence number that we've seen for this source frame.
-     */
-    private int start = -1;
+	/**
+	 * The start sequence number that we've seen for this source frame.
+	 */
+	private int start = -1;
 
-    /**
-     * The end sequence number that we've seen for this source frame.
-     */
-    private int end = -1;
+	/**
+	 * The end sequence number that we've seen for this source frame.
+	 */
+	private int end = -1;
 
-    /**
-     * Ctor.
-     *
-     * @param rtpEncoding the {@link RTPEncodingDesc} that this instance belongs
-     * to.
-     * @param pkt the first {@link RawPacket} that we've seen for this frame.
-     * @param receivedMs the time (in millis) when the first packet of this
-     * frame was received.
-     */
-    FrameDesc(RTPEncodingDesc rtpEncoding, RawPacket pkt, long receivedMs)
-    {
-        this.rtpEncoding = rtpEncoding;
-        this.ts = pkt.getTimestamp();
-        this.receivedMs = receivedMs;
+	/**
+	 * Ctor.
+	 *
+	 * @param rtpEncoding the {@link RTPEncodingDesc} that this instance belongs to.
+	 * @param pkt         the first {@link RawPacket} that we've seen for this
+	 *                    frame.
+	 * @param receivedMs  the time (in millis) when the first packet of this frame
+	 *                    was received.
+	 */
+	FrameDesc(RTPEncodingDesc rtpEncoding, RawPacket pkt, long receivedMs) {
+		this.rtpEncoding = rtpEncoding;
+		this.ts = pkt.getTimestamp();
+		this.receivedMs = receivedMs;
 
-        MediaStreamImpl stream = rtpEncoding.getMediaStreamTrack()
-            .getMediaStreamTrackReceiver().getStream();
+		MediaStreamImpl stream = rtpEncoding.getMediaStreamTrack().getMediaStreamTrackReceiver().getStream();
 
-        this.supportsFrameBoundaries = stream.supportsFrameBoundaries(pkt);
-    }
+		this.supportsFrameBoundaries = stream.supportsFrameBoundaries(pkt);
+	}
 
-    /**
-     * Gets a boolean that indicates whether or not we can read the frame
-     * boundaries of this frame.
-     *
-     * @return true if we're able to read the frame boundaries of this frame,
-     * false otherwise.
-     */
-    boolean supportsFrameBoundaries()
-    {
-        return supportsFrameBoundaries;
-    }
+	/**
+	 * Gets a boolean that indicates whether or not we can read the frame boundaries
+	 * of this frame.
+	 *
+	 * @return true if we're able to read the frame boundaries of this frame, false
+	 *         otherwise.
+	 */
+	boolean supportsFrameBoundaries() {
+		return supportsFrameBoundaries;
+	}
 
-    /**
-     * Gets the {@link RTPEncodingDesc} that this {@link FrameDesc} belongs to.
-     *
-     * @return the {@link RTPEncodingDesc} that this {@link FrameDesc} belongs
-     * to.
-     */
-    public RTPEncodingDesc getRTPEncoding()
-    {
-        return rtpEncoding;
-    }
+	/**
+	 * Gets the {@link RTPEncodingDesc} that this {@link FrameDesc} belongs to.
+	 *
+	 * @return the {@link RTPEncodingDesc} that this {@link FrameDesc} belongs to.
+	 */
+	public RTPEncodingDesc getRTPEncoding() {
+		return rtpEncoding;
+	}
 
-    /**
-     * Gets the RTP timestamp for this frame.
-     *
-     * @return the RTP timestamp for this frame.
-     */
-    public long getTimestamp()
-    {
-        return ts;
-    }
+	/**
+	 * Gets the RTP timestamp for this frame.
+	 *
+	 * @return the RTP timestamp for this frame.
+	 */
+	public long getTimestamp() {
+		return ts;
+	}
 
-    /**
-     * Gets the time (in millis) when the first packet of this frame was
-     * received.
-     *
-     * @return the time (in millis) when the first packet of this frame was
-     * received.
-     */
-    public long getReceivedMs()
-    {
-        return receivedMs;
-    }
+	/**
+	 * Gets the time (in millis) when the first packet of this frame was received.
+	 *
+	 * @return the time (in millis) when the first packet of this frame was
+	 *         received.
+	 */
+	public long getReceivedMs() {
+		return receivedMs;
+	}
 
-    /**
-     * Gets the end sequence number for this source frame.
-     *
-     * @return the end sequence number for this source frame.
-     */
-    public int getEnd()
-    {
-        return end;
-    }
+	/**
+	 * Gets the end sequence number for this source frame.
+	 *
+	 * @return the end sequence number for this source frame.
+	 */
+	public int getEnd() {
+		return end;
+	}
 
-    /**
-     * Returns whether or not the last sequence number of this frame
-     * is known (conclusively)
-     *
-     * @return true if we know the last sequence number of this frame, false
-     * otherwise
-     */
-    public boolean lastSequenceNumberKnown()
-    {
-        return end != -1;
-    }
+	/**
+	 * Returns whether or not the last sequence number of this frame is known
+	 * (conclusively)
+	 *
+	 * @return true if we know the last sequence number of this frame, false
+	 *         otherwise
+	 */
+	public boolean lastSequenceNumberKnown() {
+		return end != -1;
+	}
 
-    /**
-     * Sets the end sequence number of this source frame.
-     *
-     * @param end the end sequence number of this source frame.
-     */
-    void setEnd(int end)
-    {
-        this.end = end;
-    }
+	/**
+	 * Sets the end sequence number of this source frame.
+	 *
+	 * @param end the end sequence number of this source frame.
+	 */
+	void setEnd(int end) {
+		this.end = end;
+	}
 
-    /**
-     * Gets the start sequence number for this source frame.
-     *
-     * @return the start sequence number for this source frame.
-     */
-    public int getStart()
-    {
-        return start;
-    }
+	/**
+	 * Gets the start sequence number for this source frame.
+	 *
+	 * @return the start sequence number for this source frame.
+	 */
+	public int getStart() {
+		return start;
+	}
 
-    /**
-     * Returns whether or not the first sequence number of this frame
-     * is known (conclusively)
-     *
-     * @return true if we know the first sequence number of this frame, false
-     * otherwise
-     */
-    public boolean firstSequenceNumberKnown()
-    {
-        return start != -1;
-    }
+	/**
+	 * Returns whether or not the first sequence number of this frame is known
+	 * (conclusively)
+	 *
+	 * @return true if we know the first sequence number of this frame, false
+	 *         otherwise
+	 */
+	public boolean firstSequenceNumberKnown() {
+		return start != -1;
+	}
 
+	/**
+	 * Sets the start sequence number of this source frame.
+	 *
+	 * @param start the start sequence number of this source frame.
+	 */
+	void setStart(int start) {
+		this.start = start;
+	}
 
-    /**
-     * Sets the start sequence number of this source frame.
-     *
-     * @param start the start sequence number of this source frame.
-     */
-    void setStart(int start)
-    {
-        this.start = start;
-    }
+	/**
+	 * Gets a boolean indicating whether or not this frame is independent.
+	 *
+	 * @return true if this frame is independent, false otherwise.
+	 */
+	public boolean isIndependent() {
+		return independent == null ? false : independent;
+	}
 
-    /**
-     * Gets a boolean indicating whether or not this frame is independent.
-     *
-     * @return true if this frame is independent, false otherwise.
-     */
-    public boolean isIndependent()
-    {
-        return independent == null ? false : independent;
-    }
+	/**
+	 * Gets the minimum sequence number that we've seen for this source frame.
+	 *
+	 * @return the minimum sequence number that we've seen for this source frame.
+	 */
+	public int getMinSeen() {
+		return minSeen;
+	}
 
-    /**
-     * Gets the minimum sequence number that we've seen for this source frame.
-     *
-     * @return the minimum sequence number that we've seen for this source
-     * frame.
-     */
-    public int getMinSeen()
-    {
-        return minSeen;
-    }
+	/**
+	 * Gets the maximum sequence number that we've seen for this source frame.
+	 *
+	 * @return the maximum sequence number that we've seen for this source frame.
+	 */
+	public int getMaxSeen() {
+		return maxSeen;
+	}
 
-    /**
-     * Gets the maximum sequence number that we've seen for this source frame.
-     *
-     * @return the maximum sequence number that we've seen for this source
-     * frame.
-     */
-    public int getMaxSeen()
-    {
-        return maxSeen;
-    }
+	/**
+	 * Determines whether a packet belongs to this frame or not.
+	 * 
+	 * @param pkt the {@link RawPacket} to determine whether or not it belongs to
+	 *            this frame.
+	 * @return true if the {@link RawPacket} passed as an argument belongs to this
+	 *         frame, otherwise false.
+	 */
+	public boolean matches(RawPacket pkt) {
+		if (!RTPPacketPredicate.INSTANCE.test(pkt) || ts != pkt.getTimestamp()
+				|| minSeen == -1 /* <=> maxSeen == -1 */) {
+			return false;
+		}
 
-    /**
-     * Determines whether a packet belongs to this frame or not.
-     * @param pkt the {@link RawPacket} to determine whether or not it belongs
-     * to this frame.
-     * @return true if the {@link RawPacket} passed as an argument belongs to
-     * this frame, otherwise false.
-     */
-    public boolean matches(RawPacket pkt)
-    {
-        if (!RTPPacketPredicate.INSTANCE.test(pkt)
-            || ts != pkt.getTimestamp()
-            || minSeen == -1 /* <=> maxSeen == -1 */)
-        {
-            return false;
-        }
+		int seqNum = pkt.getSequenceNumber();
+		return RTPUtils.getSequenceNumberDelta(seqNum, minSeen) >= 0
+				&& RTPUtils.getSequenceNumberDelta(seqNum, maxSeen) <= 0;
+	}
 
-        int seqNum = pkt.getSequenceNumber();
-        return RTPUtils.getSequenceNumberDelta(seqNum, minSeen) >= 0
-            && RTPUtils.getSequenceNumberDelta(seqNum, maxSeen) <= 0;
-    }
+	/**
+	 * Updates the state of this {@link FrameDesc}.
+	 *
+	 * @param pkt the {@link RawPacket} that will be used to update the state of
+	 *            this {@link FrameDesc}.
+	 * @return true if the state has changed, false otherwise.
+	 */
+	boolean update(RawPacket pkt) {
+		boolean changed = false;
 
+		int seqNum = pkt.getSequenceNumber();
 
-    /**
-     * Updates the state of this {@link FrameDesc}.
-     *
-     * @param pkt the {@link RawPacket} that will be used to update the state of
-     * this {@link FrameDesc}.
-     * @return true if the state has changed, false otherwise.
-     */
-    boolean update(RawPacket pkt)
-    {
-        boolean changed = false;
+		MediaStreamImpl stream = rtpEncoding.getMediaStreamTrack().getMediaStreamTrackReceiver().getStream();
 
-        int seqNum = pkt.getSequenceNumber();
+		if (minSeen == -1 || RTPUtils.getSequenceNumberDelta(minSeen, seqNum) > 0) {
+			changed = true;
+			minSeen = seqNum;
+		}
 
-        MediaStreamImpl stream = rtpEncoding.getMediaStreamTrack()
-            .getMediaStreamTrackReceiver().getStream();
+		if (maxSeen == -1 || RTPUtils.getSequenceNumberDelta(maxSeen, seqNum) < 0) {
+			changed = true;
+			maxSeen = seqNum;
+		}
 
-        if (minSeen == -1 || RTPUtils.getSequenceNumberDelta(minSeen, seqNum) > 0)
-        {
-            changed = true;
-            minSeen = seqNum;
-        }
+		if (end == -1 && stream.isEndOfFrame(pkt)) {
+			changed = true;
+			end = seqNum;
+		}
 
-        if (maxSeen == -1 || RTPUtils.getSequenceNumberDelta(maxSeen, seqNum) < 0)
-        {
-            changed = true;
-            maxSeen = seqNum;
-        }
+		boolean isSOF = stream.isStartOfFrame(pkt);
+		if (start == -1 && isSOF) {
+			changed = true;
+			start = seqNum;
+		}
 
-        if (end == -1 && stream.isEndOfFrame(pkt))
-        {
-            changed = true;
-            end = seqNum;
-        }
+		if (independent == null) {
+			// XXX we check for key frame outside the above if statement
+			// because for some codecs (e.g. for H264) we can detect keyframes
+			// but we cannot detect the start of a frame.
+			independent = stream.isKeyFrame(pkt);
 
-        boolean isSOF = stream.isStartOfFrame(pkt);
-        if (start == -1 && isSOF)
-        {
-            changed = true;
-            start = seqNum;
-        }
+			if (independent) {
+				if (logger.isInfoEnabled()) {
+					logger.info("keyframe,stream=" + stream.hashCode() + " ssrc=" + rtpEncoding.getPrimarySSRC()
+							+ ",idx=" + rtpEncoding.getIndex() + "," + toString());
+				}
+			}
+		}
 
-        if (independent == null)
-        {
-            // XXX we check for key frame outside the above if statement
-            // because for some codecs (e.g. for H264) we can detect keyframes
-            // but we cannot detect the start of a frame.
-            independent = stream.isKeyFrame(pkt);
+		return changed;
+	}
 
-            if (independent)
-            {
-                if (logger.isInfoEnabled())
-                {
-                    logger.info("keyframe,stream=" + stream.hashCode()
-                        + " ssrc=" + rtpEncoding.getPrimarySSRC()
-                        + ",idx=" + rtpEncoding.getIndex()
-                        + "," + toString());
-                }
-            }
-        }
-
-        return changed;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "ts=" + ts +
-            ",independent=" + independent +
-            ",min_seen=" + minSeen +
-            ",max_seen=" + maxSeen +
-            ",start=" + start +
-            ",end=" + end;
-    }
+	@Override
+	public String toString() {
+		return "ts=" + ts + ",independent=" + independent + ",min_seen=" + minSeen + ",max_seen=" + maxSeen + ",start="
+				+ start + ",end=" + end;
+	}
 }

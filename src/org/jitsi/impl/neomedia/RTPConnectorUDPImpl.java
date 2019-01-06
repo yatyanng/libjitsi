@@ -15,120 +15,106 @@
  */
 package org.jitsi.impl.neomedia;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.DatagramSocket;
 
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.StreamConnector;
 
 /**
  * RTPConnector implementation for UDP.
  *
  * @author Sebastien Vincent
  */
-public class RTPConnectorUDPImpl
-    extends AbstractRTPConnector
-{
-    /**
-     * The UDP socket this instance uses to send and receive RTP packets.
-     */
-    private DatagramSocket dataSocket;
+public class RTPConnectorUDPImpl extends AbstractRTPConnector {
+	/**
+	 * The UDP socket this instance uses to send and receive RTP packets.
+	 */
+	private DatagramSocket dataSocket;
 
-    /**
-     * The UDP socket this instance uses to send and receive RTCP packets.
-     */
-    private DatagramSocket controlSocket;
+	/**
+	 * The UDP socket this instance uses to send and receive RTCP packets.
+	 */
+	private DatagramSocket controlSocket;
 
-    /**
-     * Initializes a new <tt>RTPConnectorUDPImpl</tt> which is to use a given
-     * pair of datagram sockets for RTP and RTCP traffic specified in the form
-     * of a <tt>StreamConnector</tt>.
-     *
-     * @param connector the pair of datagram sockets for RTP and RTCP traffic
-     * the new instance is to use
-     */
-    public RTPConnectorUDPImpl(StreamConnector connector)
-    {
-        super(connector);
-    }
+	/**
+	 * Initializes a new <tt>RTPConnectorUDPImpl</tt> which is to use a given pair
+	 * of datagram sockets for RTP and RTCP traffic specified in the form of a
+	 * <tt>StreamConnector</tt>.
+	 *
+	 * @param connector the pair of datagram sockets for RTP and RTCP traffic the
+	 *                  new instance is to use
+	 */
+	public RTPConnectorUDPImpl(StreamConnector connector) {
+		super(connector);
+	}
 
-    /**
-     * Gets the UDP socket this instance uses to send and receive RTP packets.
-     *
-     * @return the UDP socket this instance uses to send and receive RTP packets
-     */
-    public DatagramSocket getDataSocket()
-    {
-        if (dataSocket == null)
-            dataSocket = connector.getDataSocket();
-        return dataSocket;
-    }
+	/**
+	 * Gets the UDP socket this instance uses to send and receive RTP packets.
+	 *
+	 * @return the UDP socket this instance uses to send and receive RTP packets
+	 */
+	public DatagramSocket getDataSocket() {
+		if (dataSocket == null)
+			dataSocket = connector.getDataSocket();
+		return dataSocket;
+	}
 
-    /**
-     * Gets the UDP Socket this instance uses to send and receive RTCP packets.
-     *
-     * @return the UDP Socket this instance uses to send and receive RTCP
-     * packets
-     */
-    public DatagramSocket getControlSocket()
-    {
-        if (controlSocket == null)
-            controlSocket = connector.getControlSocket();
-        return controlSocket;
-    }
+	/**
+	 * Gets the UDP Socket this instance uses to send and receive RTCP packets.
+	 *
+	 * @return the UDP Socket this instance uses to send and receive RTCP packets
+	 */
+	public DatagramSocket getControlSocket() {
+		if (controlSocket == null)
+			controlSocket = connector.getControlSocket();
+		return controlSocket;
+	}
 
-    /**
-     * Creates the RTCP packet input stream to be used by <tt>RTPManager</tt>.
-     *
-     * @return a new RTCP packet input stream to be used by <tt>RTPManager</tt>
-     * @throws IOException if an error occurs during the creation of the RTCP
-     * packet input stream
-     */
-    @Override
-    protected RTPConnectorInputStream<?> createControlInputStream()
-        throws IOException
-    {
-        return new RTCPConnectorInputStream(getControlSocket());
-    }
+	/**
+	 * Creates the RTCP packet input stream to be used by <tt>RTPManager</tt>.
+	 *
+	 * @return a new RTCP packet input stream to be used by <tt>RTPManager</tt>
+	 * @throws IOException if an error occurs during the creation of the RTCP packet
+	 *                     input stream
+	 */
+	@Override
+	protected RTPConnectorInputStream<?> createControlInputStream() throws IOException {
+		return new RTCPConnectorInputStream(getControlSocket());
+	}
 
-    /**
-     * Creates the RTCP packet output stream to be used by <tt>RTPManager</tt>.
-     *
-     * @return a new RTCP packet output stream to be used by <tt>RTPManager</tt>
-     * @throws IOException if an error occurs during the creation of the RTCP
-     * packet output stream
-     */
-    @Override
-    protected RTPConnectorOutputStream createControlOutputStream()
-        throws IOException
-    {
-        return new RTPConnectorUDPOutputStream(getControlSocket());
-    }
+	/**
+	 * Creates the RTCP packet output stream to be used by <tt>RTPManager</tt>.
+	 *
+	 * @return a new RTCP packet output stream to be used by <tt>RTPManager</tt>
+	 * @throws IOException if an error occurs during the creation of the RTCP packet
+	 *                     output stream
+	 */
+	@Override
+	protected RTPConnectorOutputStream createControlOutputStream() throws IOException {
+		return new RTPConnectorUDPOutputStream(getControlSocket());
+	}
 
-    /**
-     * Creates the RTP packet input stream to be used by <tt>RTPManager</tt>.
-     *
-     * @return a new RTP packet input stream to be used by <tt>RTPManager</tt>
-     * @throws IOException if an error occurs during the creation of the RTP
-     * packet input stream
-     */
-    @Override
-    protected RTPConnectorInputStream<?> createDataInputStream()
-        throws IOException
-    {
-        return new RTPConnectorUDPInputStream(getDataSocket());
-    }
+	/**
+	 * Creates the RTP packet input stream to be used by <tt>RTPManager</tt>.
+	 *
+	 * @return a new RTP packet input stream to be used by <tt>RTPManager</tt>
+	 * @throws IOException if an error occurs during the creation of the RTP packet
+	 *                     input stream
+	 */
+	@Override
+	protected RTPConnectorInputStream<?> createDataInputStream() throws IOException {
+		return new RTPConnectorUDPInputStream(getDataSocket());
+	}
 
-    /**
-     * Creates the RTP packet output stream to be used by <tt>RTPManager</tt>.
-     *
-     * @return a new RTP packet output stream to be used by <tt>RTPManager</tt>
-     * @throws IOException if an error occurs during the creation of the RTP
-     * packet output stream
-     */
-    @Override
-    protected RTPConnectorOutputStream createDataOutputStream()
-        throws IOException
-    {
-        return new RTPConnectorUDPOutputStream(getDataSocket());
-    }
+	/**
+	 * Creates the RTP packet output stream to be used by <tt>RTPManager</tt>.
+	 *
+	 * @return a new RTP packet output stream to be used by <tt>RTPManager</tt>
+	 * @throws IOException if an error occurs during the creation of the RTP packet
+	 *                     output stream
+	 */
+	@Override
+	protected RTPConnectorOutputStream createDataOutputStream() throws IOException {
+		return new RTPConnectorUDPOutputStream(getDataSocket());
+	}
 }

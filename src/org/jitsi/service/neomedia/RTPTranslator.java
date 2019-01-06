@@ -15,10 +15,11 @@
  */
 package org.jitsi.service.neomedia;
 
-import net.sf.fmj.media.rtp.*;
-import org.jitsi.impl.neomedia.rtp.*;
+import java.util.List;
 
-import java.util.*;
+import org.jitsi.impl.neomedia.rtp.StreamRTPManager;
+
+import net.sf.fmj.media.rtp.SSRCCache;
 
 /**
  * Represents an RTP translator which forwards RTP and RTCP traffic between
@@ -26,72 +27,66 @@ import java.util.*;
  *
  * @author Lyubomir Marinov
  */
-public interface RTPTranslator
-{
-    /**
-     * Finds the {@code StreamRTPManager} which receives a specific SSRC.
-     *
-     * @param receiveSSRC the SSRC of the RTP stream received by the
-     * {@code StreamRTPManager} to be returned
-     * @return the {@code StreamRTPManager} which receives {@code receiveSSRC}
-     * of {@code null}
-     */
-    public StreamRTPManager findStreamRTPManagerByReceiveSSRC(int receiveSSRC);
+public interface RTPTranslator {
+	/**
+	 * Finds the {@code StreamRTPManager} which receives a specific SSRC.
+	 *
+	 * @param receiveSSRC the SSRC of the RTP stream received by the
+	 *                    {@code StreamRTPManager} to be returned
+	 * @return the {@code StreamRTPManager} which receives {@code receiveSSRC} of
+	 *         {@code null}
+	 */
+	public StreamRTPManager findStreamRTPManagerByReceiveSSRC(int receiveSSRC);
 
-    /**
-     * Returns a list of <tt>StreamRTPManager</tt>s currently attached to
-     * this <tt>RTPTranslator</tt>. This is
-     * admittedly wrong, to expose the bare <tt>SSRCCache</tt> to the use of
-     * of the <tt>StreamRTPManager</tt>. We should find a better way of exposing
-     * this information. Currently it is necessary for RTCP termination.
-     *
-     * @return a list of <tt>StreamRTPManager</tt>s currently attached to
-     * this <tt>RTPTranslator</tt>.
-     */
-    public List<StreamRTPManager> getStreamRTPManagers();
+	/**
+	 * Returns a list of <tt>StreamRTPManager</tt>s currently attached to this
+	 * <tt>RTPTranslator</tt>. This is admittedly wrong, to expose the bare
+	 * <tt>SSRCCache</tt> to the use of of the <tt>StreamRTPManager</tt>. We should
+	 * find a better way of exposing this information. Currently it is necessary for
+	 * RTCP termination.
+	 *
+	 * @return a list of <tt>StreamRTPManager</tt>s currently attached to this
+	 *         <tt>RTPTranslator</tt>.
+	 */
+	public List<StreamRTPManager> getStreamRTPManagers();
 
-    /**
-     * Provides access to the underlying <tt>SSRCCache</tt> that holds
-     * statistics information about each SSRC that we receive.
-     *
-     * @return the underlying <tt>SSRCCache</tt> that holds statistics
-     * information about each SSRC that we receive.
-     */
-    public SSRCCache getSSRCCache();
+	/**
+	 * Provides access to the underlying <tt>SSRCCache</tt> that holds statistics
+	 * information about each SSRC that we receive.
+	 *
+	 * @return the underlying <tt>SSRCCache</tt> that holds statistics information
+	 *         about each SSRC that we receive.
+	 */
+	public SSRCCache getSSRCCache();
 
-    /**
-     * Defines a packet filter which allows an observer of an
-     * <tt>RTPTranslator</tt> to disallow the writing of specific packets into
-     * a specific destination identified by a <tt>MediaStream</tt>.
-     */
-    public interface WriteFilter
-    {
-        public boolean accept(
-                MediaStream source,
-                RawPacket pkt,
-                MediaStream destination,
-                boolean data);
-    }
+	/**
+	 * Defines a packet filter which allows an observer of an <tt>RTPTranslator</tt>
+	 * to disallow the writing of specific packets into a specific destination
+	 * identified by a <tt>MediaStream</tt>.
+	 */
+	public interface WriteFilter {
+		public boolean accept(MediaStream source, RawPacket pkt, MediaStream destination, boolean data);
+	}
 
-    /**
-     * Adds a <tt>WriteFilter</tt> to this <tt>RTPTranslator</tt>.
-     *
-     * @param writeFilter the <tt>WriteFilter</tt> to add to this
-     * <tt>RTPTranslator</tt>
-     */
-    public void addWriteFilter(WriteFilter writeFilter);
+	/**
+	 * Adds a <tt>WriteFilter</tt> to this <tt>RTPTranslator</tt>.
+	 *
+	 * @param writeFilter the <tt>WriteFilter</tt> to add to this
+	 *                    <tt>RTPTranslator</tt>
+	 */
+	public void addWriteFilter(WriteFilter writeFilter);
 
-    /**
-     * Releases the resources allocated by this instance in the course of its
-     * execution and prepares it to be garbage collected.
-     */
-    public void dispose();
+	/**
+	 * Releases the resources allocated by this instance in the course of its
+	 * execution and prepares it to be garbage collected.
+	 */
+	public void dispose();
 
-    /**
-     * Removes a <tt>WriteFilter</tt> from this <tt>RTPTranslator</tt>.
-     *
-     * @param writeFilter the <tt>WriteFilter</tt> to remove from this
-     * <tt>RTPTranslator</tt>
-     */
-    public void removeWriteFilter(WriteFilter writeFilter);
+	/**
+	 * Removes a <tt>WriteFilter</tt> from this <tt>RTPTranslator</tt>.
+	 *
+	 * @param writeFilter the <tt>WriteFilter</tt> to remove from this
+	 *                    <tt>RTPTranslator</tt>
+	 */
+	public void removeWriteFilter(WriteFilter writeFilter);
 }

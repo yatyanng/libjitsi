@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.transform.srtp;
 
-import org.bouncycastle.crypto.*;
+import org.bouncycastle.crypto.BlockCipher;
 
 /**
  * Defines the application programming interface (API) of a factory of
@@ -23,16 +23,15 @@ import org.bouncycastle.crypto.*;
  *
  * @author Lyubomir Marinov
  */
-public interface BlockCipherFactory
-{
-    /**
-     * Initializes a new <tt>BlockCipher</tt> instance.
-     * @param keySize AES key size (16, 24, 32 bytes)
-     *
-     * @return a new <tt>BlockCipher</tt> instance
-     * @throws Exception if anything goes wrong while initializing a new
-     * <tt>BlockCipher</tt> instance
-     */
-    public BlockCipher createBlockCipher(int keySize)
-        throws Exception;
+public interface BlockCipherFactory {
+	/**
+	 * Initializes a new <tt>BlockCipher</tt> instance.
+	 * 
+	 * @param keySize AES key size (16, 24, 32 bytes)
+	 *
+	 * @return a new <tt>BlockCipher</tt> instance
+	 * @throws Exception if anything goes wrong while initializing a new
+	 *                   <tt>BlockCipher</tt> instance
+	 */
+	public BlockCipher createBlockCipher(int keySize) throws Exception;
 }

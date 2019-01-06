@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.conference;
 
-import javax.media.protocol.*;
+import javax.media.protocol.DataSource;
 
 /**
  * Represents a filter which determines whether a specific <tt>DataSource</tt>
@@ -23,18 +23,16 @@ import javax.media.protocol.*;
  *
  * @author Lyubomir Marinov
  */
-public interface DataSourceFilter
-{
-    /**
-     * Determines whether a specific <tt>DataSource</tt> is accepted by this
-     * filter i.e. whether the caller of this filter should include it in its
-     * selection.
-     *
-     * @param dataSource the <tt>DataSource</tt> to be checked whether it is
-     * accepted by this filter
-     * @return <tt>true</tt> if this filter accepts the specified
-     * <tt>DataSource</tt> i.e. if the caller of this filter should include it
-     * in its selection; otherwise, <tt>false</tt>
-     */
-    public boolean accept(DataSource dataSource);
+public interface DataSourceFilter {
+	/**
+	 * Determines whether a specific <tt>DataSource</tt> is accepted by this filter
+	 * i.e. whether the caller of this filter should include it in its selection.
+	 *
+	 * @param dataSource the <tt>DataSource</tt> to be checked whether it is
+	 *                   accepted by this filter
+	 * @return <tt>true</tt> if this filter accepts the specified
+	 *         <tt>DataSource</tt> i.e. if the caller of this filter should include
+	 *         it in its selection; otherwise, <tt>false</tt>
+	 */
+	public boolean accept(DataSource dataSource);
 }

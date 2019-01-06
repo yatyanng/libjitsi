@@ -15,9 +15,14 @@
  */
 package org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi;
 
-import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.*;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.IMediaBuffer_GetLength;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.IMediaBuffer_GetMaxLength;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.IMediaBuffer_Release;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.IMediaBuffer_SetLength;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.MediaBuffer_pop;
+import static org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi.VoiceCaptureDSP.MediaBuffer_push;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Implements a managed <tt>IMediaBuffer</tt> which wraps around an unmanaged
@@ -25,95 +30,72 @@ import java.io.*;
  *
  * @author Lyubomir Marinov
  */
-public class PtrMediaBuffer
-    implements IMediaBuffer
-{
-    /**
-     * The unmanaged <tt>IMediaBuffer</tt> represented by this instance.
-     */
-    final long ptr;
+public class PtrMediaBuffer implements IMediaBuffer {
+	/**
+	 * The unmanaged <tt>IMediaBuffer</tt> represented by this instance.
+	 */
+	final long ptr;
 
-    /**
-     * Initializes a new managed <tt>IMediaBuffer</tt> which is to represent a
-     * specific unmanaged <tt>IMediaBuffer</tt>.
-     * 
-     * @param ptr the unmanaged <tt>IMediaBuffer</tt> to be represented by the
-     * new instance
-     */
-    public PtrMediaBuffer(long ptr)
-    {
-        if (ptr == 0)
-            throw new IllegalArgumentException("ptr");
-        this.ptr = ptr;
-    }
+	/**
+	 * Initializes a new managed <tt>IMediaBuffer</tt> which is to represent a
+	 * specific unmanaged <tt>IMediaBuffer</tt>.
+	 * 
+	 * @param ptr the unmanaged <tt>IMediaBuffer</tt> to be represented by the new
+	 *            instance
+	 */
+	public PtrMediaBuffer(long ptr) {
+		if (ptr == 0)
+			throw new IllegalArgumentException("ptr");
+		this.ptr = ptr;
+	}
 
-    public int GetLength()
-        throws IOException
-    {
-        try
-        {
-            return IMediaBuffer_GetLength(ptr);
-        }
-        catch (HResultException hre)
-        {
-            throw new IOException(hre);
-        }
-    }
+	@Override
+	public int GetLength() throws IOException {
+		try {
+			return IMediaBuffer_GetLength(ptr);
+		} catch (HResultException hre) {
+			throw new IOException(hre);
+		}
+	}
 
-    public int GetMaxLength()
-        throws IOException
-    {
-        try
-        {
-            return IMediaBuffer_GetMaxLength(ptr);
-        }
-        catch (HResultException hre)
-        {
-            throw new IOException(hre);
-        }
-    }
+	@Override
+	public int GetMaxLength() throws IOException {
+		try {
+			return IMediaBuffer_GetMaxLength(ptr);
+		} catch (HResultException hre) {
+			throw new IOException(hre);
+		}
+	}
 
-    public int pop(byte[] buffer, int offset, int length)
-        throws IOException
-    {
-        try
-        {
-            return MediaBuffer_pop(ptr, buffer, offset, length);
-        }
-        catch (HResultException hre)
-        {
-            throw new IOException(hre);
-        }
-    }
+	@Override
+	public int pop(byte[] buffer, int offset, int length) throws IOException {
+		try {
+			return MediaBuffer_pop(ptr, buffer, offset, length);
+		} catch (HResultException hre) {
+			throw new IOException(hre);
+		}
+	}
 
-    public int push(byte[] buffer, int offset, int length)
-        throws IOException
-    {
-        try
-        {
-            return MediaBuffer_push(ptr, buffer, offset, length);
-        }
-        catch (HResultException hre)
-        {
-            throw new IOException(hre);
-        }
-    }
+	@Override
+	public int push(byte[] buffer, int offset, int length) throws IOException {
+		try {
+			return MediaBuffer_push(ptr, buffer, offset, length);
+		} catch (HResultException hre) {
+			throw new IOException(hre);
+		}
+	}
 
-    public int Release()
-    {
-        return IMediaBuffer_Release(ptr);
-    }
+	@Override
+	public int Release() {
+		return IMediaBuffer_Release(ptr);
+	}
 
-    public void SetLength(int length)
-        throws IOException
-    {
-        try
-        {
-            IMediaBuffer_SetLength(ptr, length);
-        }
-        catch (HResultException hre)
-        {
-            throw new IOException(hre);
-        }
-    }
+	@Override
+	public void SetLength(int length) throws IOException {
+		try {
+			IMediaBuffer_SetLength(ptr, length);
+		} catch (HResultException hre) {
+			throw new IOException(hre);
+		}
+	}
 }

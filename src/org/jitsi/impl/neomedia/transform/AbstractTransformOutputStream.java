@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.transform;
 
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.RawPacket;
 
 /**
  * Facilitates the implementation of the interface
@@ -23,52 +23,46 @@ import org.jitsi.service.neomedia.*;
  *
  * @author Lyubomir Marinov
  */
-public abstract class AbstractTransformOutputStream
-    implements TransformOutputStream
-{
-    /**
-     * The {@code PacketTransformer} used by this instance to transform
-     * {@code RawPacket}s.
-     */
-    private PacketTransformer _transformer;
+public abstract class AbstractTransformOutputStream implements TransformOutputStream {
+	/**
+	 * The {@code PacketTransformer} used by this instance to transform
+	 * {@code RawPacket}s.
+	 */
+	private PacketTransformer _transformer;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getTransformer()
-    {
-        return _transformer;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getTransformer() {
+		return _transformer;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTransformer(PacketTransformer transformer)
-    {
-        _transformer = transformer;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setTransformer(PacketTransformer transformer) {
+		_transformer = transformer;
+	}
 
-    /**
-     * Transforms a specified array of {@code RawPacket}s using the
-     * {@code PacketTransformer} associated with this instance (if any).
-     *
-     * @param pkts the {@code RawPacket}s to transform
-     * @return an array of {@code RawPacket}s which are the result of the
-     * transformation of the specified {@code pkts} using the
-     * {@code PacketTransformer} associated with this instance. If there is no
-     * {@code PacketTransformer} associated with this instance, returns
-     * {@code pkts}.
-     */
-    protected RawPacket[] transform(RawPacket[] pkts)
-    {
-        PacketTransformer transformer = getTransformer();
+	/**
+	 * Transforms a specified array of {@code RawPacket}s using the
+	 * {@code PacketTransformer} associated with this instance (if any).
+	 *
+	 * @param pkts the {@code RawPacket}s to transform
+	 * @return an array of {@code RawPacket}s which are the result of the
+	 *         transformation of the specified {@code pkts} using the
+	 *         {@code PacketTransformer} associated with this instance. If there is
+	 *         no {@code PacketTransformer} associated with this instance, returns
+	 *         {@code pkts}.
+	 */
+	protected RawPacket[] transform(RawPacket[] pkts) {
+		PacketTransformer transformer = getTransformer();
 
-        if (transformer != null)
-        {
-            pkts = transformer.transform(pkts);
-        }
-        return pkts;
-    }
+		if (transformer != null) {
+			pkts = transformer.transform(pkts);
+		}
+		return pkts;
+	}
 }

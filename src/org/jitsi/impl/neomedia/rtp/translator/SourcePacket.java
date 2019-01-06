@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.rtp.translator;
 
-import javax.media.*;
+import javax.media.Buffer;
 
 /**
  * Privately used by {@link PushSourceStreamImpl} at the time of this writing
@@ -23,33 +23,28 @@ import javax.media.*;
  *
  * @author Lyubomir Marinov
  */
-class SourcePacket
-    extends Buffer
-{
-    private byte[] buf;
+class SourcePacket extends Buffer {
+	private byte[] buf;
 
-    public PushSourceStreamDesc streamDesc;
+	public PushSourceStreamDesc streamDesc;
 
-    public SourcePacket(byte[] buf, int off, int len)
-    {
-        setData(buf);
-        setOffset(off);
-        setLength(len);
-    }
+	public SourcePacket(byte[] buf, int off, int len) {
+		setData(buf);
+		setOffset(off);
+		setLength(len);
+	}
 
-    public byte[] getBuffer()
-    {
-        return buf;
-    }
+	public byte[] getBuffer() {
+		return buf;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setData(Object data)
-    {
-        super.setData(data);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setData(Object data) {
+		super.setData(data);
 
-        buf = (byte[]) data;
-    }
+		buf = (byte[]) data;
+	}
 }

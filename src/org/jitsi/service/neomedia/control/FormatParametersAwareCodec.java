@@ -15,8 +15,9 @@
  */
 package org.jitsi.service.neomedia.control;
 
-import javax.media.*;
-import java.util.*;
+import java.util.Map;
+
+import javax.media.Control;
 
 /**
  * An interface used to pass additional format parameters (received via
@@ -24,12 +25,11 @@ import java.util.*;
  *
  * @author Boris Grozev
  */
-public interface FormatParametersAwareCodec extends Control
-{
-    /**
-     * Sets the format parameters to <tt>fmtps</tt>
-     *
-     * @param fmtps The format parameters to set
-     */
-    public void setFormatParameters(Map<String, String> fmtps);
+public interface FormatParametersAwareCodec extends Control {
+	/**
+	 * Sets the format parameters to <tt>fmtps</tt>
+	 *
+	 * @param fmtps The format parameters to set
+	 */
+	public void setFormatParameters(Map<String, String> fmtps);
 }

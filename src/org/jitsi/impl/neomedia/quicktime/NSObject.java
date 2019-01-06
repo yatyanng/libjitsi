@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.quicktime;
 
-import org.jitsi.util.*;
+import org.jitsi.util.JNIUtils;
 
 /**
  * Represents the root of most Objective-C class hierarchies which which objects
@@ -24,89 +24,80 @@ import org.jitsi.util.*;
  *
  * @author Lyubomir Marinov
  */
-public class NSObject
-{
-    static
-    {
-        JNIUtils.loadLibrary("jnquicktime", NSObject.class.getClassLoader());
-    }
+public class NSObject {
+	static {
+		JNIUtils.loadLibrary("jnquicktime", NSObject.class.getClassLoader());
+	}
 
-    /**
-     * The pointer to the Objective-C object represented by this instance.
-     */
-    private long ptr;
+	/**
+	 * The pointer to the Objective-C object represented by this instance.
+	 */
+	private long ptr;
 
-    /**
-     * Initializes a new <tt>NSObject</tt> instance which is to represent a
-     * specific Objective-C object.
-     *
-     * @param ptr the pointer to the Objective-C object to be represented by the
-     * new instance
-     */
-    public NSObject(long ptr)
-    {
-        setPtr(ptr);
-    }
+	/**
+	 * Initializes a new <tt>NSObject</tt> instance which is to represent a specific
+	 * Objective-C object.
+	 *
+	 * @param ptr the pointer to the Objective-C object to be represented by the new
+	 *            instance
+	 */
+	public NSObject(long ptr) {
+		setPtr(ptr);
+	}
 
-    /**
-     * Gets the pointer to the Objective-C object represented by this instance.
-     *
-     * @return the pointer to the Objective-C object represented by this
-     * instance
-     */
-    public long getPtr()
-    {
-        return ptr;
-    }
+	/**
+	 * Gets the pointer to the Objective-C object represented by this instance.
+	 *
+	 * @return the pointer to the Objective-C object represented by this instance
+	 */
+	public long getPtr() {
+		return ptr;
+	}
 
-    /**
-     * Decrements the reference count of the Objective-C object represented by
-     * this instance. It is sent a <tt>dealloc</tt> message when its reference
-     * count reaches <tt>0</tt>.
-     */
-    public void release()
-    {
-        release(ptr);
-    }
+	/**
+	 * Decrements the reference count of the Objective-C object represented by this
+	 * instance. It is sent a <tt>dealloc</tt> message when its reference count
+	 * reaches <tt>0</tt>.
+	 */
+	public void release() {
+		release(ptr);
+	}
 
-    /**
-     * Decrements the reference count of a specific Objective-C object. It is
-     * sent a <tt>dealloc</tt> message when its reference count reaches
-     * <tt>0</tt>.
-     *
-     * @param ptr the pointer to the Objective-C object to decrement the
-     * reference count of
-     */
-    public static native void release(long ptr);
+	/**
+	 * Decrements the reference count of a specific Objective-C object. It is sent a
+	 * <tt>dealloc</tt> message when its reference count reaches <tt>0</tt>.
+	 *
+	 * @param ptr the pointer to the Objective-C object to decrement the reference
+	 *            count of
+	 */
+	public static native void release(long ptr);
 
-    /**
-     * Increments the reference count of the Objective-C object represented by
-     * this instance.
-     */
-    public void retain()
-    {
-        retain(ptr);
-    }
+	/**
+	 * Increments the reference count of the Objective-C object represented by this
+	 * instance.
+	 */
+	public void retain() {
+		retain(ptr);
+	}
 
-    /**
-     * Increments the reference count of a specific Objective-C object.
-     *
-     * @param ptr the pointer to be Objective-C object to increment the
-     * reference count of
-     */
-    static native void retain(long ptr);
+	/**
+	 * Increments the reference count of a specific Objective-C object.
+	 *
+	 * @param ptr the pointer to be Objective-C object to increment the reference
+	 *            count of
+	 */
+	static native void retain(long ptr);
 
-    /**
-     * Sets the pointer to the Objective-C object represented by this instance.
-     *
-     * @param ptr the pointer to the Objective-C object to be represented by
-     * this instance
-     */
-    protected void setPtr(long ptr)
-    {
-        if (ptr == 0)
-            throw new IllegalArgumentException("ptr");
+	/**
+	 * Sets the pointer to the Objective-C object represented by this instance.
+	 *
+	 * @param ptr the pointer to the Objective-C object to be represented by this
+	 *            instance
+	 */
+	protected void setPtr(long ptr) {
+		if (ptr == 0)
+			throw new IllegalArgumentException("ptr");
 
-        this.ptr = ptr;
-    }
+		this.ptr = ptr;
+	}
 }

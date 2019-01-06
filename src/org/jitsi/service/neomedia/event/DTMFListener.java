@@ -21,22 +21,21 @@ package org.jitsi.service.neomedia.event;
  *
  * @author Emil Ivov
  */
-public interface DTMFListener
-{
+public interface DTMFListener {
 
-    /**
-     * Indicates that we have started receiving a <tt>DTMFTone</tt>.
-     *
-     * @param event the <tt>DTMFToneEvent</tt> instance containing the
-     * <tt>DTMFTone</tt>
-     */
-    public void dtmfToneReceptionStarted(DTMFToneEvent event);
+	/**
+	 * Indicates that we have started receiving a <tt>DTMFTone</tt>.
+	 *
+	 * @param event the <tt>DTMFToneEvent</tt> instance containing the
+	 *              <tt>DTMFTone</tt>
+	 */
+	public void dtmfToneReceptionStarted(DTMFToneEvent event);
 
-    /**
-     * Indicates that reception of a DTMF tone has stopped.
-     *
-     * @param event the <tt>DTMFToneEvent</tt> instance containing the
-     * <tt>DTMFTone</tt>
-     */
-    public void dtmfToneReceptionEnded(DTMFToneEvent event);
+	/**
+	 * Indicates that reception of a DTMF tone has stopped.
+	 *
+	 * @param event the <tt>DTMFToneEvent</tt> instance containing the
+	 *              <tt>DTMFTone</tt>
+	 */
+	public void dtmfToneReceptionEnded(DTMFToneEvent event);
 }

@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Defines the API of Microsoft's <tt>IMediaBuffer</tt> interface (referred to
@@ -24,22 +24,16 @@ import java.io.*;
  *
  * @author Lyubomir Marinov
  */
-public interface IMediaBuffer
-{
-    int GetLength()
-        throws IOException;
+public interface IMediaBuffer {
+	int GetLength() throws IOException;
 
-    int GetMaxLength()
-        throws IOException;
+	int GetMaxLength() throws IOException;
 
-    int pop(byte[] buffer, int offset, int length)
-        throws IOException;
+	int pop(byte[] buffer, int offset, int length) throws IOException;
 
-    int push(byte[] buffer, int offset, int length)
-        throws IOException;
+	int push(byte[] buffer, int offset, int length) throws IOException;
 
-    int Release();
+	int Release();
 
-    void SetLength(int length)
-        throws IOException;
+	void SetLength(int length) throws IOException;
 }

@@ -15,9 +15,9 @@
  */
 package org.jitsi.sctp4j;
 
-import org.jitsi.util.*;
+import java.io.IOException;
 
-import java.io.*;
+import org.jitsi.util.Logger;
 
 /**
  * A direct connection that passes packets between two <tt>SctpSocket</tt>
@@ -25,50 +25,42 @@ import java.io.*;
  *
  * @author Pawel Domas
  */
-public class DirectLink
-    implements NetworkLink
-{
-    /**
-     * The logger used by this class instances.
-     */
-    private static final Logger logger = Logger.getLogger(DirectLink.class);
+public class DirectLink implements NetworkLink {
+	/**
+	 * The logger used by this class instances.
+	 */
+	private static final Logger logger = Logger.getLogger(DirectLink.class);
 
-    /**
-     * Instance "a" of this direct connection.
-     */
-    private final SctpSocket a;
+	/**
+	 * Instance "a" of this direct connection.
+	 */
+	private final SctpSocket a;
 
-    /**
-     * Instance "b" of this direct connection.
-     */
-    private final SctpSocket b;
-    
-    public DirectLink(SctpSocket a, SctpSocket b)
-    {
-        this.a = a;
-        this.b = b;
-    }
+	/**
+	 * Instance "b" of this direct connection.
+	 */
+	private final SctpSocket b;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void onConnOut(final SctpSocket s, final byte[] packet)
-        throws IOException
-    {
-        final SctpSocket dest = s == this.a ? this.b : this.a;
-        new Thread(new Runnable()
-        {
-            public void run()
-            {
-                try
-                {
-                    dest.onConnIn(packet, 0, packet.length);
-                }
-                catch (IOException e)
-                {
-                    logger.error(e, e);
-                }
-            }
-        }).start();
-    }
+	public DirectLink(SctpSocket a, SctpSocket b) {
+		this.a = a;
+		this.b = b;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onConnOut(final SctpSocket s, final byte[] packet) throws IOException {
+		final SctpSocket dest = s == this.a ? this.b : this.a;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					dest.onConnIn(packet, 0, packet.length);
+				} catch (IOException e) {
+					logger.error(e, e);
+				}
+			}
+		}).start();
+	}
 }

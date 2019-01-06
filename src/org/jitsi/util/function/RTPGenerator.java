@@ -15,8 +15,9 @@
  */
 package org.jitsi.util.function;
 
-import net.sf.fmj.media.rtp.util.*;
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.RawPacket;
+
+import net.sf.fmj.media.rtp.util.RTPPacket;
 
 /**
  * A <tt>Function</tt> that produces <tt>RawPacket</tt>s from
@@ -24,26 +25,24 @@ import org.jitsi.service.neomedia.*;
  *
  * @author George Politis
  */
-public class RTPGenerator extends AbstractFunction<RTPPacket, RawPacket>
-{
-    public RawPacket apply(RTPPacket input)
-    {
-        if (input == null)
-        {
-            throw new NullPointerException();
-        }
+public class RTPGenerator extends AbstractFunction<RTPPacket, RawPacket> {
+	@Override
+	public RawPacket apply(RTPPacket input) {
+		if (input == null) {
+			throw new NullPointerException();
+		}
 
-        // Assemble the RTP packet.
-        int len = input.calcLength();
-        input.assemble(len, false);
-        byte[] buf = input.data;
+		// Assemble the RTP packet.
+		int len = input.calcLength();
+		input.assemble(len, false);
+		byte[] buf = input.data;
 
-        RawPacket pktOut = new RawPacket();
+		RawPacket pktOut = new RawPacket();
 
-        pktOut.setBuffer(buf);
-        pktOut.setLength(buf.length);
-        pktOut.setOffset(0);
+		pktOut.setBuffer(buf);
+		pktOut.setLength(buf.length);
+		pktOut.setOffset(0);
 
-        return pktOut;
-    }
+		return pktOut;
+	}
 }

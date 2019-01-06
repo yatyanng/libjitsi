@@ -15,8 +15,8 @@
  */
 package org.jitsi.sctp4j;
 
-import org.junit.runner.*;
-import org.junit.runners.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * Test suite for SCTP.
@@ -24,11 +24,6 @@ import org.junit.runners.*;
  * @author Pawel Domas
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses(
-    {
-        SctpNativeWrapperTest.class,
-        SctpTransferTest.class
-    })
-public class SctpTestSuite
-{
+@Suite.SuiteClasses({ SctpNativeWrapperTest.class, SctpTransferTest.class })
+public class SctpTestSuite {
 }

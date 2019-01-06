@@ -15,19 +15,18 @@
  */
 package org.jitsi.service.neomedia.control;
 
-import javax.media.*;
+import javax.media.Control;
 
 /**
  * An interface used to communicate with a decoder that supports decoding FEC
  *
  * @author Boris Grozev
  */
-public interface FECDecoderControl extends Control
-{
-    /**
-     * Returns the number of packets for which FEC was decoded
-     *
-     * @return the number of packets for which FEC was decoded
-     */
-    public int fecPacketsDecoded();
+public interface FECDecoderControl extends Control {
+	/**
+	 * Returns the number of packets for which FEC was decoded
+	 *
+	 * @return the number of packets for which FEC was decoded
+	 */
+	public int fecPacketsDecoded();
 }

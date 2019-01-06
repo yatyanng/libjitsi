@@ -20,9 +20,6 @@ package org.jitsi.impl.neomedia.rtp.remotebitrateestimator;
  *
  * @author Lyubomir Marinov
  */
-enum RateControlRegion
-{
-    kRcNearMax,
-    kRcAboveMax,
-    kRcMaxUnknown
+enum RateControlRegion {
+	kRcNearMax, kRcAboveMax, kRcMaxUnknown
 }

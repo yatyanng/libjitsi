@@ -15,35 +15,35 @@
  */
 package org.jitsi.service.neomedia.device;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Point;
 
 /**
  * Represents a physical screen display.
  *
  * @author Sebastien Vincent
  */
-public interface ScreenDevice
-{
-    /**
-     * Determines whether this screen contains a specified point.
-     *
-     * @param p point coordinate
-     * @return <tt>true</tt> if <tt>point</tt> belongs to this screen;
-     * <tt>false</tt>, otherwise
-     */
-    public boolean containsPoint(Point p);
+public interface ScreenDevice {
+	/**
+	 * Determines whether this screen contains a specified point.
+	 *
+	 * @param p point coordinate
+	 * @return <tt>true</tt> if <tt>point</tt> belongs to this screen;
+	 *         <tt>false</tt>, otherwise
+	 */
+	public boolean containsPoint(Point p);
 
-    /**
-     * Gets this screen's index.
-     *
-     * @return this screen's index
-     */
-    public int getIndex();
+	/**
+	 * Gets this screen's index.
+	 *
+	 * @return this screen's index
+	 */
+	public int getIndex();
 
-    /**
-     * Gets the current resolution of this screen.
-     *
-     * @return the current resolution of this screen
-     */
-    public Dimension getSize();
+	/**
+	 * Gets the current resolution of this screen.
+	 *
+	 * @return the current resolution of this screen
+	 */
+	public Dimension getSize();
 }

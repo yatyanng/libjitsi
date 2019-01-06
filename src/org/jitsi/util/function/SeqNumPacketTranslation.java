@@ -15,48 +15,44 @@
  */
 package org.jitsi.util.function;
 
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.service.neomedia.*;
+import org.jitsi.impl.neomedia.RTPPacketPredicate;
+import org.jitsi.service.neomedia.ByteArrayBuffer;
+import org.jitsi.service.neomedia.RawPacket;
 
 /**
  * @author George Politis
  */
-public class SeqNumPacketTranslation<T extends ByteArrayBuffer>
-    extends AbstractFunction<T, T>
-{
-    /**
-     * The {@link SeqNumTranslation} to apply to the sequence number of the
-     * {@link RawPacket} that is specified as an argument in the apply method.
-     */
-    private final SeqNumTranslation seqNumTranslation;
+public class SeqNumPacketTranslation<T extends ByteArrayBuffer> extends AbstractFunction<T, T> {
+	/**
+	 * The {@link SeqNumTranslation} to apply to the sequence number of the
+	 * {@link RawPacket} that is specified as an argument in the apply method.
+	 */
+	private final SeqNumTranslation seqNumTranslation;
 
-    /**
-     *
-     * @param seqNumDelta The delta to apply to the sequence number of the
-     * {@link RawPacket} that is specified as an argument in the apply method.
-     */
-    public SeqNumPacketTranslation(int seqNumDelta)
-    {
-        this.seqNumTranslation = new SeqNumTranslation(seqNumDelta);
-    }
+	/**
+	 *
+	 * @param seqNumDelta The delta to apply to the sequence number of the
+	 *                    {@link RawPacket} that is specified as an argument in the
+	 *                    apply method.
+	 */
+	public SeqNumPacketTranslation(int seqNumDelta) {
+		this.seqNumTranslation = new SeqNumTranslation(seqNumDelta);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ByteArrayBuffer apply(ByteArrayBuffer baf)
-    {
-        if (RTPPacketPredicate.INSTANCE.test(baf))
-        {
-            int srcSeqNum = RawPacket.getSequenceNumber(baf);
-            int dstSeqNum = seqNumTranslation.apply(srcSeqNum);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ByteArrayBuffer apply(ByteArrayBuffer baf) {
+		if (RTPPacketPredicate.INSTANCE.test(baf)) {
+			int srcSeqNum = RawPacket.getSequenceNumber(baf);
+			int dstSeqNum = seqNumTranslation.apply(srcSeqNum);
 
-            if (srcSeqNum != dstSeqNum)
-            {
-                RawPacket.setSequenceNumber(baf, dstSeqNum);
-            }
-        }
+			if (srcSeqNum != dstSeqNum) {
+				RawPacket.setSequenceNumber(baf, dstSeqNum);
+			}
+		}
 
-        return baf;
-    }
+		return baf;
+	}
 }

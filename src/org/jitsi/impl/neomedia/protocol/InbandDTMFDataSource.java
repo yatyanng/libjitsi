@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.protocol;
 
-import org.jitsi.service.neomedia.*;
+import org.jitsi.service.neomedia.DTMFInbandTone;
 
 /**
  * All datasources that support inband DTMF functionalities implement
@@ -23,12 +23,11 @@ import org.jitsi.service.neomedia.*;
  *
  * @author Vincent Lucas
  */
-public interface InbandDTMFDataSource
-{
-    /**
-     * Adds a new inband DTMF tone to send.
-     *
-     * @param tone the DTMF tone to send.
-     */
-    public void addDTMF(DTMFInbandTone tone);
+public interface InbandDTMFDataSource {
+	/**
+	 * Adds a new inband DTMF tone to send.
+	 *
+	 * @param tone the DTMF tone to send.
+	 */
+	public void addDTMF(DTMFInbandTone tone);
 }

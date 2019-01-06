@@ -15,7 +15,7 @@
  */
 package org.jitsi.service.neomedia;
 
-import org.jitsi.service.neomedia.event.*;
+import org.jitsi.service.neomedia.event.ActiveSpeakerChangedListener;
 
 /**
  * Represents an algorithm for the detection/identification of the
@@ -35,36 +35,33 @@ import org.jitsi.service.neomedia.event.*;
  * @author Boris Grozev
  * @author Lyubomir Marinov
  */
-public interface ActiveSpeakerDetector
-{
-    /**
-     * Adds a listener to be notified by this active speaker detector when the
-     * active stream changes.
-     *
-     * @param listener the listener to register with this instance for
-     * notifications about changes of the active speaker
-     */
-    public void addActiveSpeakerChangedListener(
-            ActiveSpeakerChangedListener listener);
+public interface ActiveSpeakerDetector {
+	/**
+	 * Adds a listener to be notified by this active speaker detector when the
+	 * active stream changes.
+	 *
+	 * @param listener the listener to register with this instance for notifications
+	 *                 about changes of the active speaker
+	 */
+	public void addActiveSpeakerChangedListener(ActiveSpeakerChangedListener listener);
 
-    /**
-     * Notifies this <tt>ActiveSpeakerDetector</tt> about the latest/current
-     * audio level of a stream/speaker identified by a specific synchronization
-     * source identifier/SSRC.
-     *
-     * @param ssrc the SSRC of the stream/speaker
-     * @param level the latest/current audio level of the stream/speaker with
-     * the specified <tt>ssrc</tt>
-     */
-    public void levelChanged(long ssrc, int level);
+	/**
+	 * Notifies this <tt>ActiveSpeakerDetector</tt> about the latest/current audio
+	 * level of a stream/speaker identified by a specific synchronization source
+	 * identifier/SSRC.
+	 *
+	 * @param ssrc  the SSRC of the stream/speaker
+	 * @param level the latest/current audio level of the stream/speaker with the
+	 *              specified <tt>ssrc</tt>
+	 */
+	public void levelChanged(long ssrc, int level);
 
-    /**
-     * Removes a listener to no longer be notified by this active speaker
-     * detector when the active stream changes.
-     *
-     * @param listener the listener to unregister with this instance for
-     * notifications about changes of the active speaker
-     */
-    public void removeActiveSpeakerChangedListener(
-            ActiveSpeakerChangedListener listener);
+	/**
+	 * Removes a listener to no longer be notified by this active speaker detector
+	 * when the active stream changes.
+	 *
+	 * @param listener the listener to unregister with this instance for
+	 *                 notifications about changes of the active speaker
+	 */
+	public void removeActiveSpeakerChangedListener(ActiveSpeakerChangedListener listener);
 }

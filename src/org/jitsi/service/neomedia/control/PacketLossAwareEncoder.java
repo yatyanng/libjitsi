@@ -15,19 +15,18 @@
  */
 package org.jitsi.service.neomedia.control;
 
-import javax.media.*;
+import javax.media.Control;
 
 /**
  * An interface used to notify encoders about the packet loss which is expected.
  *
  * @author Boris Grozev
  */
-public interface PacketLossAwareEncoder extends Control
-{
-    /**
-     * Tells the encoder to expect <tt>percentage</tt> percent packet loss.
-     *
-     * @return the percentage of expected packet loss
-     */
-    public void setExpectedPacketLoss(int percentage);
+public interface PacketLossAwareEncoder extends Control {
+	/**
+	 * Tells the encoder to expect <tt>percentage</tt> percent packet loss.
+	 *
+	 * @return the percentage of expected packet loss
+	 */
+	public void setExpectedPacketLoss(int percentage);
 }

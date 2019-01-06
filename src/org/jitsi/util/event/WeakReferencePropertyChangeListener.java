@@ -15,8 +15,9 @@
  */
 package org.jitsi.util.event;
 
-import java.beans.*;
-import java.lang.ref.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.ref.WeakReference;
 
 /**
  * Implements <tt>PropertyChangeListener</tt> which delegates to another
@@ -24,34 +25,25 @@ import java.lang.ref.*;
  *
  * @author Lyubomir Marinov
  */
-public class WeakReferencePropertyChangeListener
-    implements PropertyChangeListener
-{
-    private final WeakReference<PropertyChangeListener> delegate;
+public class WeakReferencePropertyChangeListener implements PropertyChangeListener {
+	private final WeakReference<PropertyChangeListener> delegate;
 
-    public WeakReferencePropertyChangeListener(PropertyChangeListener delegate)
-    {
-        this.delegate = new WeakReference<PropertyChangeListener>(delegate);
-    }
+	public WeakReferencePropertyChangeListener(PropertyChangeListener delegate) {
+		this.delegate = new WeakReference<PropertyChangeListener>(delegate);
+	}
 
-    @Override
-    public void propertyChange(PropertyChangeEvent ev)
-    {
-        PropertyChangeListener delegate = this.delegate.get();
+	@Override
+	public void propertyChange(PropertyChangeEvent ev) {
+		PropertyChangeListener delegate = this.delegate.get();
 
-        if (delegate == null)
-        {
-            Object source = ev.getSource();
+		if (delegate == null) {
+			Object source = ev.getSource();
 
-            if (source instanceof PropertyChangeNotifier)
-            {
-                ((PropertyChangeNotifier) source)
-                    .removePropertyChangeListener(this);
-            }
-        }
-        else
-        {
-            delegate.propertyChange(ev);
-        }
-    }
+			if (source instanceof PropertyChangeNotifier) {
+				((PropertyChangeNotifier) source).removePropertyChangeListener(this);
+			}
+		} else {
+			delegate.propertyChange(ev);
+		}
+	}
 }

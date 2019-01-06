@@ -15,23 +15,20 @@
  */
 package org.jitsi.impl.neomedia;
 
-import org.jitsi.service.libjitsi.*;
+import org.jitsi.service.libjitsi.LibJitsi;
 
 /**
  *
  * @author Lyubomir Marinov
  */
-public class NeomediaServiceUtils
-{
-    public static MediaServiceImpl getMediaServiceImpl()
-    {
-        return (MediaServiceImpl) LibJitsi.getMediaService();
-    }
+public class NeomediaServiceUtils {
+	public static MediaServiceImpl getMediaServiceImpl() {
+		return (MediaServiceImpl) LibJitsi.getMediaService();
+	}
 
-    /**
-     * Prevents the initialization of <tt>NeomediaServiceUtils</tt> instances.
-     */
-    private NeomediaServiceUtils()
-    {
-    }
+	/**
+	 * Prevents the initialization of <tt>NeomediaServiceUtils</tt> instances.
+	 */
+	private NeomediaServiceUtils() {
+	}
 }

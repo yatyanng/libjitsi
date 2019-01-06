@@ -16,66 +16,59 @@
 
 package org.jitsi.impl.neomedia.rtcp;
 
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.impl.neomedia.transform.*;
-import org.jitsi.service.neomedia.*;
+import org.jitsi.impl.neomedia.RTCPPacketPredicate;
+import org.jitsi.impl.neomedia.transform.PacketTransformer;
+import org.jitsi.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.jitsi.impl.neomedia.transform.TransformEngine;
+import org.jitsi.service.neomedia.ByteArrayBuffer;
+import org.jitsi.service.neomedia.RawPacket;
 
 /**
  * Provide RTCP termination facilities for audio
  *
  * @author Brian Baldino
  */
-public class AudioRTCPTermination
-    implements TransformEngine
-{
-    RTCPTransformer rtcpTransformer = new RTCPTransformer();
+public class AudioRTCPTermination implements TransformEngine {
+	RTCPTransformer rtcpTransformer = new RTCPTransformer();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTPTransformer()
-    {
-        return null;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTPTransformer() {
+		return null;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTCPTransformer()
-    {
-        return rtcpTransformer;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTCPTransformer() {
+		return rtcpTransformer;
+	}
 
-    class RTCPTransformer
-        extends SinglePacketTransformerAdapter
-    {
-        /**
-         * Ctor.
-         */
-        RTCPTransformer()
-        {
-            super(RTCPPacketPredicate.INSTANCE);
-        }
+	class RTCPTransformer extends SinglePacketTransformerAdapter {
+		/**
+		 * Ctor.
+		 */
+		RTCPTransformer() {
+			super(RTCPPacketPredicate.INSTANCE);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public RawPacket transform(RawPacket pkt)
-        {
-            RTCPIterator it = new RTCPIterator(pkt);
-            while (it.hasNext())
-            {
-                ByteArrayBuffer baf = it.next();
-                // We want to terminate all REMB packets
-                if (RTCPREMBPacket.isREMBPacket(baf))
-                {
-                    it.remove();
-                }
-            }
-            return pkt.getLength() == 0 ? null : pkt;
-        }
-    }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public RawPacket transform(RawPacket pkt) {
+			RTCPIterator it = new RTCPIterator(pkt);
+			while (it.hasNext()) {
+				ByteArrayBuffer baf = it.next();
+				// We want to terminate all REMB packets
+				if (RTCPREMBPacket.isREMBPacket(baf)) {
+					it.remove();
+				}
+			}
+			return pkt.getLength() == 0 ? null : pkt;
+		}
+	}
 }

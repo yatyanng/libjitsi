@@ -20,18 +20,15 @@ package org.jitsi.impl.neomedia.codec.audio.ulaw;
  *
  * @author Thomas Hofer
  */
-public class Packetizer
-    extends com.sun.media.codec.audio.ulaw.Packetizer
-{
-    /**
-     * Constructs a new ULaw <tt>Packetizer</tt>.
-     */
-    public Packetizer()
-    {
-        // RFC 3551 4.5 Audio Encodings default ms/packet is 20
-        packetSize = 160;
-        setPacketSize(packetSize);
+public class Packetizer extends com.sun.media.codec.audio.ulaw.Packetizer {
+	/**
+	 * Constructs a new ULaw <tt>Packetizer</tt>.
+	 */
+	public Packetizer() {
+		// RFC 3551 4.5 Audio Encodings default ms/packet is 20
+		packetSize = 160;
+		setPacketSize(packetSize);
 
-        PLUGIN_NAME = "ULaw Packetizer";
-    }
+		PLUGIN_NAME = "ULaw Packetizer";
+	}
 }

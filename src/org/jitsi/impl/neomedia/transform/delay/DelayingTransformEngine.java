@@ -15,8 +15,10 @@
  */
 package org.jitsi.impl.neomedia.transform.delay;
 
-import org.jitsi.impl.neomedia.transform.*;
-import org.jitsi.service.neomedia.*;
+import org.jitsi.impl.neomedia.transform.PacketTransformer;
+import org.jitsi.impl.neomedia.transform.SinglePacketTransformer;
+import org.jitsi.impl.neomedia.transform.TransformEngine;
+import org.jitsi.service.neomedia.RawPacket;
 
 /**
  * A {@link TransformEngine} that delays the RTP stream by specified packet
@@ -25,67 +27,58 @@ import org.jitsi.service.neomedia.*;
  * @author Boris Grozev
  * @author Pawel Domas
  */
-public class DelayingTransformEngine
-    implements TransformEngine
-{
-    private DelayingTransformer delayingTransformer;
+public class DelayingTransformEngine implements TransformEngine {
+	private DelayingTransformer delayingTransformer;
 
-    /**
-     * Creates new instance of <tt>DelayingTransformEngine</tt> which will delay
-     * the RTP stream by given amount of packets.
-     * @param packetCount the delay counted in packets.
-     */
-    public DelayingTransformEngine(int packetCount)
-    {
-        delayingTransformer = new DelayingTransformer(packetCount);
-    }
+	/**
+	 * Creates new instance of <tt>DelayingTransformEngine</tt> which will delay the
+	 * RTP stream by given amount of packets.
+	 * 
+	 * @param packetCount the delay counted in packets.
+	 */
+	public DelayingTransformEngine(int packetCount) {
+		delayingTransformer = new DelayingTransformer(packetCount);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTPTransformer()
-    {
-        return delayingTransformer;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTPTransformer() {
+		return delayingTransformer;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTCPTransformer()
-    {
-        return null;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTCPTransformer() {
+		return null;
+	}
 
-    private class DelayingTransformer extends SinglePacketTransformer
-    {
-        private RawPacket[] buffer;
+	private class DelayingTransformer extends SinglePacketTransformer {
+		private RawPacket[] buffer;
 
-        private int idx = 0;
+		private int idx = 0;
 
-        DelayingTransformer(int pktCount)
-        {
-            this.buffer = new RawPacket[pktCount];
-        }
+		DelayingTransformer(int pktCount) {
+			this.buffer = new RawPacket[pktCount];
+		}
 
-        @Override
-        public RawPacket reverseTransform(RawPacket pkt)
-        {
-            if (pkt != null)
-            {
-                RawPacket ret = buffer[idx];
-                buffer[idx] = pkt;
-                idx = (idx + 1) % buffer.length;
-                return ret;
-            }
-            return null;
-        }
+		@Override
+		public RawPacket reverseTransform(RawPacket pkt) {
+			if (pkt != null) {
+				RawPacket ret = buffer[idx];
+				buffer[idx] = pkt;
+				idx = (idx + 1) % buffer.length;
+				return ret;
+			}
+			return null;
+		}
 
-        @Override
-        public RawPacket transform(RawPacket pkt)
-        {
-            return pkt;
-        }
-    }
+		@Override
+		public RawPacket transform(RawPacket pkt) {
+			return pkt;
+		}
+	}
 }

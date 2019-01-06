@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.jitsi.impl.neomedia.jmfext.media.protocol.greyfading;
 
-import javax.media.control.*;
+import javax.media.control.FormatControl;
 
-import org.jitsi.impl.neomedia.jmfext.media.protocol.*;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
 
 /**
  * Implements a <tt>CaptureDevice</tt> which provides a fading animation from
@@ -26,19 +27,15 @@ import org.jitsi.impl.neomedia.jmfext.media.protocol.*;
  *
  * @author Thomas Kuntz
  */
-public class DataSource
-    extends AbstractVideoPullBufferCaptureDevice
-{
-    /**
-     * {@inheritDoc}
-     *
-     * Implements
-     * {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
-     */
-    protected VideoGreyFadingStream createStream(
-            int streamIndex,
-            FormatControl formatControl)
-    {
-        return new VideoGreyFadingStream(this, formatControl);
-    }
+public class DataSource extends AbstractVideoPullBufferCaptureDevice {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Implements
+	 * {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
+	 */
+	@Override
+	protected VideoGreyFadingStream createStream(int streamIndex, FormatControl formatControl) {
+		return new VideoGreyFadingStream(this, formatControl);
+	}
 }

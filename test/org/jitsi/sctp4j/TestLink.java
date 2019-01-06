@@ -15,57 +15,43 @@
  */
 package org.jitsi.sctp4j;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Random;
 
 /**
- * The link that loses some packets and
- * produces IOExceptions from time to time.
+ * The link that loses some packets and produces IOExceptions from time to time.
  *
  * @author Pawel Domas
  */
-public class TestLink
-    extends DirectLink
-{
-    private final double lossRate;
+public class TestLink extends DirectLink {
+	private final double lossRate;
 
-    private final double errorRate;
+	private final double errorRate;
 
-    /**
-     * Set random seed for consistent tests
-     */
-    private static final Random rand = new Random(1234567);
+	/**
+	 * Set random seed for consistent tests
+	 */
+	private static final Random rand = new Random(1234567);
 
-    public TestLink(
-            SctpSocket a,
-            SctpSocket b,
-            double lossRate,
-            double errorRate)
-    {
-        super(a, b);
-        this.lossRate = lossRate;
-        this.errorRate = errorRate;
-    }
+	public TestLink(SctpSocket a, SctpSocket b, double lossRate, double errorRate) {
+		super(a, b);
+		this.lossRate = lossRate;
+		this.errorRate = errorRate;
+	}
 
-    @Override
-    public void onConnOut(SctpSocket s, byte[] packet)
-        throws IOException
-    {
-        double r = rand.nextDouble();
+	@Override
+	public void onConnOut(SctpSocket s, byte[] packet) throws IOException {
+		double r = rand.nextDouble();
 
-        if (r < (errorRate + lossRate))
-        {
-            if (r < errorRate)
-            {
-                throw new IOException("Link failure");
-            }
-            else
-            {
-                // Packet lost, nothing happens
-                return;
-            }
-        }
-        // Eventually pass the data
-        super.onConnOut(s, packet);
-    }
+		if (r < (errorRate + lossRate)) {
+			if (r < errorRate) {
+				throw new IOException("Link failure");
+			} else {
+				// Packet lost, nothing happens
+				return;
+			}
+		}
+		// Eventually pass the data
+		super.onConnOut(s, packet);
+	}
 }

@@ -20,33 +20,33 @@ package org.jitsi.impl.neomedia.codec.audio.ilbc;
  */
 class bitpack {
 
-    int firstpart;
-    int rest;
+	int firstpart;
+	int rest;
 
-    public bitpack() {
-    firstpart = 0;
-    rest = 0;
-    }
+	public bitpack() {
+		firstpart = 0;
+		rest = 0;
+	}
 
-    public bitpack(int fp, int r) {
-    firstpart = fp;
-    rest = r;
-    }
+	public bitpack(int fp, int r) {
+		firstpart = fp;
+		rest = r;
+	}
 
-    public int get_firstpart() {
-    return firstpart;
-    }
+	public int get_firstpart() {
+		return firstpart;
+	}
 
-    public void set_firstpart(int fp) {
-    firstpart = fp;
-    }
+	public void set_firstpart(int fp) {
+		firstpart = fp;
+	}
 
-    public int get_rest() {
-    return rest;
-    }
+	public int get_rest() {
+		return rest;
+	}
 
-    public void set_rest(int r) {
-    rest = r;
-    }
+	public void set_rest(int r) {
+		rest = r;
+	}
 
 }

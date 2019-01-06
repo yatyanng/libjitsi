@@ -20,7 +20,6 @@ package org.jitsi.service.neomedia.rtp;
  *
  * @author Lyubomir Marinov
  */
-public interface CallStatsObserver
-{
-    void onRttUpdate(long avgRttMs, long maxRttMs);
+public interface CallStatsObserver {
+	void onRttUpdate(long avgRttMs, long maxRttMs);
 }

@@ -15,49 +15,46 @@
  */
 package org.jitsi.impl.neomedia.rtp;
 
-import net.sf.fmj.media.rtp.*;
-import org.jitsi.impl.neomedia.rtcp.*;
-import org.jitsi.service.neomedia.rtp.*;
+import org.jitsi.impl.neomedia.rtcp.NACKPacket;
+import org.jitsi.impl.neomedia.rtcp.RTCPREMBPacket;
+import org.jitsi.impl.neomedia.rtcp.RTCPTCCPacket;
+import org.jitsi.service.neomedia.rtp.RTCPPacketListener;
+
+import net.sf.fmj.media.rtp.RTCPSRPacket;
 
 /**
  * @author George Politis
  */
-public class RTCPPacketListenerAdapter
-    implements RTCPPacketListener
-{
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void nackReceived(NACKPacket nackPacket)
-    {
+public class RTCPPacketListenerAdapter implements RTCPPacketListener {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void nackReceived(NACKPacket nackPacket) {
 
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void rembReceived(RTCPREMBPacket rembPacket)
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rembReceived(RTCPREMBPacket rembPacket) {
 
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void srReceived(RTCPSRPacket srPacket)
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void srReceived(RTCPSRPacket srPacket) {
 
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void tccReceived(RTCPTCCPacket tccPacket)
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void tccReceived(RTCPTCCPacket tccPacket) {
 
-    }
+	}
 }

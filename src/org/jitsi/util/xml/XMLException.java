@@ -22,37 +22,31 @@ package org.jitsi.util.xml;
  * @author Emil Ivov
  * @version 1.0
  */
-public class XMLException
-    extends Exception
-{
-    /**
-     * Serial version UID.
-     */
-    private static final long serialVersionUID = 0L;
+public class XMLException extends Exception {
+	/**
+	 * Serial version UID.
+	 */
+	private static final long serialVersionUID = 0L;
 
-    /**
-     * Constructs a new XMLException with the specified detail message and cause.
-     *
-     * @param message a message specifying the reason that caused the
-     * exception.
-     *
-     * @param cause the cause (which is saved
-     * for later retrieval by the Throwable.getCause() method). (A null value is
-     * permitted, and indicates that the cause is nonexistent or unknown.)
-     */
-    public XMLException(String message, Throwable cause)
-    {
-        super (message, cause);
-    }
+	/**
+	 * Constructs a new XMLException with the specified detail message and cause.
+	 *
+	 * @param message a message specifying the reason that caused the exception.
+	 *
+	 * @param cause   the cause (which is saved for later retrieval by the
+	 *                Throwable.getCause() method). (A null value is permitted, and
+	 *                indicates that the cause is nonexistent or unknown.)
+	 */
+	public XMLException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    /**
-       * Constructs a new XMLException with the specified detail message.
-       *
-       * @param message a message specifying the reason that caused the
-       * exception.
-       */
-    public XMLException(String message)
-    {
-        super(message);
-    }
+	/**
+	 * Constructs a new XMLException with the specified detail message.
+	 *
+	 * @param message a message specifying the reason that caused the exception.
+	 */
+	public XMLException(String message) {
+		super(message);
+	}
 }

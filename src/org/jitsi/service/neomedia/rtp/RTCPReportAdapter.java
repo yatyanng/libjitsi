@@ -15,7 +15,7 @@
  */
 package org.jitsi.service.neomedia.rtp;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.RTCPReport;
 
 /**
  * A default implementation of <tt>RTCPReportListener</tt> to facilitate
@@ -23,30 +23,32 @@ import net.sf.fmj.media.rtp.*;
  *
  * @author Lyubomir Marinov
  */
-public class RTCPReportAdapter
-    implements RTCPReportListener
-{
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void rtcpExtendedReportReceived(RTCPExtendedReport extendedReport) {}
+public class RTCPReportAdapter implements RTCPReportListener {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rtcpExtendedReportReceived(RTCPExtendedReport extendedReport) {
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void rtcpExtendedReportSent(RTCPExtendedReport extendedReport) {}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rtcpExtendedReportSent(RTCPExtendedReport extendedReport) {
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void rtcpReportReceived(RTCPReport report) {}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rtcpReportReceived(RTCPReport report) {
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void rtcpReportSent(RTCPReport report) {}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rtcpReportSent(RTCPReport report) {
+	}
 }

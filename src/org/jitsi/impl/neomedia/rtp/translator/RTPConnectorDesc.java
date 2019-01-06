@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.rtp.translator;
 
-import javax.media.rtp.*;
+import javax.media.rtp.RTPConnector;
 
 /**
  * Describes an <tt>RTPConnector</tt> associated with an endpoint from and to
@@ -23,21 +23,17 @@ import javax.media.rtp.*;
  *
  * @author Lyubomir Marinov
  */
-class RTPConnectorDesc
-{
-    /**
-     * The <tt>RTPConnector</tt> associated with an endpoint from and to which
-     * an <tt>RTPTranslatorImpl</tt> is translating.
-     */
-    public final RTPConnector connector;
+class RTPConnectorDesc {
+	/**
+	 * The <tt>RTPConnector</tt> associated with an endpoint from and to which an
+	 * <tt>RTPTranslatorImpl</tt> is translating.
+	 */
+	public final RTPConnector connector;
 
-    public final StreamRTPManagerDesc streamRTPManagerDesc;
+	public final StreamRTPManagerDesc streamRTPManagerDesc;
 
-    public RTPConnectorDesc(
-            StreamRTPManagerDesc streamRTPManagerDesc,
-            RTPConnector connector)
-    {
-        this.streamRTPManagerDesc = streamRTPManagerDesc;
-        this.connector = connector;
-    }
+	public RTPConnectorDesc(StreamRTPManagerDesc streamRTPManagerDesc, RTPConnector connector) {
+		this.streamRTPManagerDesc = streamRTPManagerDesc;
+		this.connector = connector;
+	}
 }

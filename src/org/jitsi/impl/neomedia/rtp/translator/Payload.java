@@ -15,14 +15,13 @@
  */
 package org.jitsi.impl.neomedia.rtp.translator;
 
-import javax.media.rtp.*;
+import javax.media.rtp.OutputDataStream;
 
 /**
  * A <tt>Payload</tt> type that can be written to an <tt>OutputDataStream</tt>.
  *
  * @author George Politis
  */
-public interface Payload
-{
-    public void writeTo(OutputDataStream stream);
+public interface Payload {
+	public void writeTo(OutputDataStream stream);
 }

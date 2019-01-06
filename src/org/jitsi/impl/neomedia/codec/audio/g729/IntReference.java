@@ -18,7 +18,6 @@ package org.jitsi.impl.neomedia.codec.audio.g729;
 /**
  * @author Lubomir Marinov
  */
-class IntReference
-{
-    int value;
+class IntReference {
+	int value;
 }

@@ -20,30 +20,26 @@ package org.jitsi.impl.neomedia.quicktime;
  *
  * @author Lyubomir Marinov
  */
-public class NSError
-    extends NSObject
-{
-    /**
-     * Initializes a new <tt>NSError</tt> instance which is to represent a
-     * specific Objective-C <tt>NSError</tt> object.
-     *
-     * @param ptr the pointer to the Objective-C <tt>NSError</tt> object to be
-     * represented by the new instance
-     */
-    public NSError(long ptr)
-    {
-        super(ptr);
-    }
+public class NSError extends NSObject {
+	/**
+	 * Initializes a new <tt>NSError</tt> instance which is to represent a specific
+	 * Objective-C <tt>NSError</tt> object.
+	 *
+	 * @param ptr the pointer to the Objective-C <tt>NSError</tt> object to be
+	 *            represented by the new instance
+	 */
+	public NSError(long ptr) {
+		super(ptr);
+	}
 
-    /**
-     * Called by the garbage collector to release system resources and perform
-     * other cleanup.
-     *
-     * @see Object#finalize()
-     */
-    @Override
-    protected void finalize()
-    {
-        release();
-    }
+	/**
+	 * Called by the garbage collector to release system resources and perform other
+	 * cleanup.
+	 *
+	 * @see Object#finalize()
+	 */
+	@Override
+	protected void finalize() {
+		release();
+	}
 }

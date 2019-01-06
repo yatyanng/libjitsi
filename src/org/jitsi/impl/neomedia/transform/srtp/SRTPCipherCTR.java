@@ -25,47 +25,45 @@ package org.jitsi.impl.neomedia.transform.srtp;
  * SRTP Counter Mode AES Encryption algorithm is defined in RFC3711, section
  * 4.1.1.
  */
-abstract class SRTPCipherCTR
-{
-    protected static final int BLKLEN = 16;
+abstract class SRTPCipherCTR {
+	protected static final int BLKLEN = 16;
 
-    /**
-     * (Re)Initialize the cipher with key
-     *
-     * @param key the key. key.length == BLKLEN
-     */
-    public abstract void init(byte[] key);
+	/**
+	 * (Re)Initialize the cipher with key
+	 *
+	 * @param key the key. key.length == BLKLEN
+	 */
+	public abstract void init(byte[] key);
 
-    /**
-     * Process (encrypt/decrypt) data from offset for len bytes iv can be
-     * modified by this function but you MUST never reuse an IV so it's ok
-     *
-     * @param data byte array to be processed
-     * @param off the offset
-     * @param len the length
-     * @param iv initial value of the counter (can be modified).
-     *           iv.length == BLKLEN
-     */
-    public abstract void process(byte[] data, int off, int len, byte[] iv);
+	/**
+	 * Process (encrypt/decrypt) data from offset for len bytes iv can be modified
+	 * by this function but you MUST never reuse an IV so it's ok
+	 *
+	 * @param data byte array to be processed
+	 * @param off  the offset
+	 * @param len  the length
+	 * @param iv   initial value of the counter (can be modified). iv.length ==
+	 *             BLKLEN
+	 */
+	public abstract void process(byte[] data, int off, int len, byte[] iv);
 
-    /**
-     * Check the validity of process function arguments
-     */
-    protected static void checkProcessArgs(byte[] data, int off, int len, byte[] iv)
-    {
-        if (iv.length != BLKLEN)
-            throw new IllegalArgumentException("iv.length != BLKLEN");
-        if (off < 0)
-            throw new IllegalArgumentException("off < 0");
-        if (len < 0)
-            throw new IllegalArgumentException("len < 0");
-        if (off + len > data.length)
-            throw new IllegalArgumentException("off + len > data.length");
-        /*
-         * we increment only the last 16 bits of the iv, so we can encrypt
-         * a maximum of 2^16 blocks, ie 1048576 bytes
-         */
-        if (data.length > 1048576)
-            throw new IllegalArgumentException("data.length > 1048576");
-    }
+	/**
+	 * Check the validity of process function arguments
+	 */
+	protected static void checkProcessArgs(byte[] data, int off, int len, byte[] iv) {
+		if (iv.length != BLKLEN)
+			throw new IllegalArgumentException("iv.length != BLKLEN");
+		if (off < 0)
+			throw new IllegalArgumentException("off < 0");
+		if (len < 0)
+			throw new IllegalArgumentException("len < 0");
+		if (off + len > data.length)
+			throw new IllegalArgumentException("off + len > data.length");
+		/*
+		 * we increment only the last 16 bits of the iv, so we can encrypt a maximum of
+		 * 2^16 blocks, ie 1048576 bytes
+		 */
+		if (data.length > 1048576)
+			throw new IllegalArgumentException("data.length > 1048576");
+	}
 }

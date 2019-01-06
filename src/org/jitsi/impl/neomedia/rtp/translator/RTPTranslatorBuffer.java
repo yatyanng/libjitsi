@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.rtp.translator;
 
-import javax.media.*;
+import javax.media.Format;
 
 /**
  * Privately used by {@link OutputDataStreamImpl} at the time of this writing
@@ -23,13 +23,12 @@ import javax.media.*;
  *
  * @author Lyubomir Marinov
  */
-class RTPTranslatorBuffer
-{
-    public byte[] data;
+class RTPTranslatorBuffer {
+	public byte[] data;
 
-    public StreamRTPManagerDesc exclusion;
+	public StreamRTPManagerDesc exclusion;
 
-    public Format format;
+	public Format format;
 
-    public int length;
+	public int length;
 }

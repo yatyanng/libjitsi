@@ -21,16 +21,15 @@ package org.jitsi.service.neomedia.event;
  *
  * @author Damian Minkov
  */
-public interface VolumeChangeListener
-{
-    /**
-     * Notifies this instance that the volume level/value maintained by a source
-     * <tt>VolumeControl</tt> (to which this instance has previously been added)
-     * has changed.
-     *
-     * @param volumeChangeEvent a <tt>VolumeChangeEvent</tt> which details the
-     * source <tt>VolumeControl</tt> which has fired the notification and the
-     * volume level/value
-     */
-    public void volumeChange(VolumeChangeEvent volumeChangeEvent);
+public interface VolumeChangeListener {
+	/**
+	 * Notifies this instance that the volume level/value maintained by a source
+	 * <tt>VolumeControl</tt> (to which this instance has previously been added) has
+	 * changed.
+	 *
+	 * @param volumeChangeEvent a <tt>VolumeChangeEvent</tt> which details the
+	 *                          source <tt>VolumeControl</tt> which has fired the
+	 *                          notification and the volume level/value
+	 */
+	public void volumeChange(VolumeChangeEvent volumeChangeEvent);
 }

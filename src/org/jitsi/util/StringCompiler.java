@@ -15,9 +15,11 @@
  */
 package org.jitsi.util;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.regex.*;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Primarily meant for debugging purposes, the <tt>StringCompiler</tt> takes a
@@ -28,131 +30,104 @@ import java.util.regex.*;
  * @author George Politis
  *
  */
-public class StringCompiler
-{
-    private final Map<String, Object> bindings;
+public class StringCompiler {
+	private final Map<String, Object> bindings;
 
-    public StringCompiler(Map<String, Object> bindings)
-    {
-        this.bindings = bindings;
-    }
+	public StringCompiler(Map<String, Object> bindings) {
+		this.bindings = bindings;
+	}
 
-    public StringCompiler()
-    {
-        this.bindings = new HashMap<String, Object>();
-    }
+	public StringCompiler() {
+		this.bindings = new HashMap<String, Object>();
+	}
 
-    public void bind(String key, Object value)
-    {
-        this.bindings.put(key, value);
-    }
+	public void bind(String key, Object value) {
+		this.bindings.put(key, value);
+	}
 
-    private static final Pattern p = Pattern.compile("\\{([^\\}]+)\\}");
+	private static final Pattern p = Pattern.compile("\\{([^\\}]+)\\}");
 
-    private StringBuffer sb;
+	private StringBuffer sb;
 
-    public StringCompiler c(String s)
-    {
-        if (StringUtils.isNullOrEmpty(s))
-        {
-            return this;
-        }
+	public StringCompiler c(String s) {
+		if (StringUtils.isNullOrEmpty(s)) {
+			return this;
+		}
 
-        Matcher m = p.matcher(s);
-        sb = new StringBuffer();
+		Matcher m = p.matcher(s);
+		sb = new StringBuffer();
 
-        while (m.find()) {
-            String key = m.group(1);
-            String value = getValue(key);
-            m.appendReplacement(sb, value);
-        }
+		while (m.find()) {
+			String key = m.group(1);
+			String value = getValue(key);
+			m.appendReplacement(sb, value);
+		}
 
-        m.appendTail(sb);
+		m.appendTail(sb);
 
-        return this;
-    }
+		return this;
+	}
 
-    @Override
-    public String toString()
-    {
-        return (sb == null) ? "" : sb.toString();
-    }
+	@Override
+	public String toString() {
+		return (sb == null) ? "" : sb.toString();
+	}
 
-    private String getValue(String key)
-    {
-        if (StringUtils.isNullOrEmpty(key))
-            throw new IllegalArgumentException("key");
+	private String getValue(String key) {
+		if (StringUtils.isNullOrEmpty(key))
+			throw new IllegalArgumentException("key");
 
-        String value = "";
+		String value = "";
 
-        String[] path = key.split("\\.");
+		String[] path = key.split("\\.");
 
-        // object graph frontier.
-        Object obj = null;
+		// object graph frontier.
+		Object obj = null;
 
-        for (int i = 0; i < path.length; i++)
-        {
-            String identifier = path[i];
+		for (int i = 0; i < path.length; i++) {
+			String identifier = path[i];
 
-            if (i == 0)
-            {
-                // Init.
-                if (bindings.containsKey(identifier))
-                {
-                    obj = bindings.get(identifier);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else
-            {
-                if (obj != null)
-                {
-                    // Decent the object graph.
-                    Class<?> c = obj.getClass();
-                    Field f;
+			if (i == 0) {
+				// Init.
+				if (bindings.containsKey(identifier)) {
+					obj = bindings.get(identifier);
+				} else {
+					break;
+				}
+			} else {
+				if (obj != null) {
+					// Decent the object graph.
+					Class<?> c = obj.getClass();
+					Field f;
 
-                    try
-                    {
-                        f = c.getDeclaredField(identifier);
-                    }
-                    catch (NoSuchFieldException e)
-                    {
-                        break;
-                    }
+					try {
+						f = c.getDeclaredField(identifier);
+					} catch (NoSuchFieldException e) {
+						break;
+					}
 
-                    if (!f.isAccessible())
-                    {
-                        f.setAccessible(true);
-                    }
+					if (!f.isAccessible()) {
+						f.setAccessible(true);
+					}
 
-                    try
-                    {
-                        obj = f.get(obj);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
+					try {
+						obj = f.get(obj);
+					} catch (IllegalAccessException e) {
+						break;
+					}
+				} else {
+					break;
+				}
+			}
 
-            if (i == path.length - 1)
-            {
-                // Stop the decent.
-                if (obj != null)
-                {
-                    value = obj.toString();
-                }
-            }
-        }
+			if (i == path.length - 1) {
+				// Stop the decent.
+				if (obj != null) {
+					value = obj.toString();
+				}
+			}
+		}
 
-        return value;
-    }
+		return value;
+	}
 }

@@ -15,58 +15,49 @@
  */
 package org.jitsi.impl.neomedia.codec.audio.amrwb;
 
-import javax.media.*;
-import javax.media.format.*;
+import javax.media.Buffer;
+import javax.media.ResourceUnavailableException;
+import javax.media.format.AudioFormat;
 
-import org.jitsi.impl.neomedia.codec.*;
+import org.jitsi.impl.neomedia.codec.AbstractCodec2;
 
 /**
  * Implements an RTP depacketizer for Adaptive Multi-Rate Wideband (AMR-WB).
  *
  * @author Lyubomir Marinov
  */
-public class DePacketizer
-    extends AbstractCodec2
-{
-    /**
-     * Initializes a new <tt>DePacketizer</tt> instance.
-     */
-    public DePacketizer()
-    {
-        super(
-                "AMR-WB RTP DePacketizer",
-                AudioFormat.class,
-                Packetizer.SUPPORTED_INPUT_FORMATS);
+public class DePacketizer extends AbstractCodec2 {
+	/**
+	 * Initializes a new <tt>DePacketizer</tt> instance.
+	 */
+	public DePacketizer() {
+		super("AMR-WB RTP DePacketizer", AudioFormat.class, Packetizer.SUPPORTED_INPUT_FORMATS);
 
-        inputFormats = Packetizer.SUPPORTED_OUTPUT_FORMATS;
-    }
+		inputFormats = Packetizer.SUPPORTED_OUTPUT_FORMATS;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doClose()
-    {
-        // TODO Auto-generated method stub
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doClose() {
+		// TODO Auto-generated method stub
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doOpen()
-        throws ResourceUnavailableException
-    {
-        // TODO Auto-generated method stub
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doOpen() throws ResourceUnavailableException {
+		// TODO Auto-generated method stub
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected int doProcess(Buffer inBuf, Buffer outBuf)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected int doProcess(Buffer inBuf, Buffer outBuf) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

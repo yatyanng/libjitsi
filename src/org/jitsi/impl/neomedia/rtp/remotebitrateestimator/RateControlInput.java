@@ -20,36 +20,30 @@ package org.jitsi.impl.neomedia.rtp.remotebitrateestimator;
  *
  * @author Lyubomir Marinov
  */
-class RateControlInput
-{
-    public BandwidthUsage bwState;
+class RateControlInput {
+	public BandwidthUsage bwState;
 
-    public long incomingBitRate;
+	public long incomingBitRate;
 
-    public double noiseVar;
+	public double noiseVar;
 
-    public RateControlInput(
-            BandwidthUsage bwState,
-            long incomingBitRate,
-            double noiseVar)
-    {
-        this.bwState = bwState;
-        this.incomingBitRate = incomingBitRate;
-        this.noiseVar = noiseVar;
-    }
+	public RateControlInput(BandwidthUsage bwState, long incomingBitRate, double noiseVar) {
+		this.bwState = bwState;
+		this.incomingBitRate = incomingBitRate;
+		this.noiseVar = noiseVar;
+	}
 
-    /**
-     * Assigns the values of the fields of <tt>source</tt> to the respective
-     * fields of this <tt>RateControlInput</tt>.
-     *
-     * @param source the <tt>RateControlInput</tt> the values of the fields of
-     * which are to be assigned to the respective fields of this
-     * <tt>RateControlInput</tt>
-     */
-    public void copy(RateControlInput source)
-    {
-        bwState = source.bwState;
-        incomingBitRate = source.incomingBitRate;
-        noiseVar = source.noiseVar;
-    }
+	/**
+	 * Assigns the values of the fields of <tt>source</tt> to the respective fields
+	 * of this <tt>RateControlInput</tt>.
+	 *
+	 * @param source the <tt>RateControlInput</tt> the values of the fields of which
+	 *               are to be assigned to the respective fields of this
+	 *               <tt>RateControlInput</tt>
+	 */
+	public void copy(RateControlInput source) {
+		bwState = source.bwState;
+		incomingBitRate = source.incomingBitRate;
+		noiseVar = source.noiseVar;
+	}
 }

@@ -15,110 +15,91 @@
  */
 package org.jitsi.impl.neomedia.codec.audio.ulaw;
 
-import javax.media.*;
-import javax.media.format.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.format.AudioFormat;
 
-import com.sun.media.controls.*;
+import com.sun.media.controls.SilenceSuppressionAdapter;
 
-public class JavaDecoder
-    extends com.ibm.media.codec.audio.AudioCodec
-{
-    static private final byte[] lutTableH = new byte[256];
+public class JavaDecoder extends com.ibm.media.codec.audio.AudioCodec {
+	static private final byte[] lutTableH = new byte[256];
 
-    static private final byte[] lutTableL = new byte[256];
+	static private final byte[] lutTableL = new byte[256];
 
-    public JavaDecoder()
-    {
-        supportedInputFormats = new AudioFormat[]
-        { new AudioFormat(AudioFormat.ULAW) };
-        defaultOutputFormats = new AudioFormat[]
-        { new AudioFormat(AudioFormat.LINEAR) };
-        PLUGIN_NAME = "Mu-Law Decoder";
-    }
+	public JavaDecoder() {
+		supportedInputFormats = new AudioFormat[] { new AudioFormat(AudioFormat.ULAW) };
+		defaultOutputFormats = new AudioFormat[] { new AudioFormat(AudioFormat.LINEAR) };
+		PLUGIN_NAME = "Mu-Law Decoder";
+	}
 
-    @Override
-    public Object[] getControls()
-    {
-        if (controls == null)
-        {
-            controls
-                = new Object[]
-                        {
-                            new SilenceSuppressionAdapter(this, false, false)
-                        };
-        }
-        return controls;
-    }
+	@Override
+	public Object[] getControls() {
+		if (controls == null) {
+			controls = new Object[] { new SilenceSuppressionAdapter(this, false, false) };
+		}
+		return controls;
+	}
 
-    @Override
-    protected Format[] getMatchingOutputFormats(Format in)
-    {
-        AudioFormat af = (AudioFormat) in;
+	@Override
+	protected Format[] getMatchingOutputFormats(Format in) {
+		AudioFormat af = (AudioFormat) in;
 
-        supportedOutputFormats =
-            new AudioFormat[]
-            { new AudioFormat(AudioFormat.LINEAR, af.getSampleRate(), 16,
-                af.getChannels(), AudioFormat.LITTLE_ENDIAN, // isBigEndian(),
-                AudioFormat.SIGNED // isSigned());
-            ) };
-        return supportedOutputFormats;
-    }
+		supportedOutputFormats = new AudioFormat[] {
+				new AudioFormat(AudioFormat.LINEAR, af.getSampleRate(), 16, af.getChannels(), AudioFormat.LITTLE_ENDIAN, // isBigEndian(),
+						AudioFormat.SIGNED // isSigned());
+				) };
+		return supportedOutputFormats;
+	}
 
-    private void initTables()
-    {
-        for (int i = 0; i < 256; i++)
-        {
-            int input = ~i;
-            int mantissa = ((input & 0xf) << 3) + 0x84;
-            int segment = (input & 0x70) >> 4;
-            int value = mantissa << segment;
+	private void initTables() {
+		for (int i = 0; i < 256; i++) {
+			int input = ~i;
+			int mantissa = ((input & 0xf) << 3) + 0x84;
+			int segment = (input & 0x70) >> 4;
+			int value = mantissa << segment;
 
-            value -= 0x84;
+			value -= 0x84;
 
-            if ((input & 0x80) != 0)
-                value = -value;
+			if ((input & 0x80) != 0)
+				value = -value;
 
-            lutTableL[i] = (byte) value;
-            lutTableH[i] = (byte) (value >> 8);
-        }
-    }
+			lutTableL[i] = (byte) value;
+			lutTableH[i] = (byte) (value >> 8);
+		}
+	}
 
-    /** Initializes the codec. */
-    @Override
-    public void open()
-    {
-        initTables();
-    }
+	/** Initializes the codec. */
+	@Override
+	public void open() {
+		initTables();
+	}
 
-    /** Decodes the buffer */
-    public int process(Buffer inputBuffer, Buffer outputBuffer)
-    {
-        if (!checkInputBuffer(inputBuffer))
-            return BUFFER_PROCESSED_FAILED;
-        if (isEOM(inputBuffer))
-        {
-            propagateEOM(outputBuffer);
-            return BUFFER_PROCESSED_OK;
-        }
+	/** Decodes the buffer */
+	@Override
+	public int process(Buffer inputBuffer, Buffer outputBuffer) {
+		if (!checkInputBuffer(inputBuffer))
+			return BUFFER_PROCESSED_FAILED;
+		if (isEOM(inputBuffer)) {
+			propagateEOM(outputBuffer);
+			return BUFFER_PROCESSED_OK;
+		}
 
-        byte[] inData = (byte[]) inputBuffer.getData();
-        byte[] outData = validateByteArraySize(outputBuffer, inData.length * 2);
+		byte[] inData = (byte[]) inputBuffer.getData();
+		byte[] outData = validateByteArraySize(outputBuffer, inData.length * 2);
 
-        int inpLength = inputBuffer.getLength();
-        int outLength = 2 * inpLength;
+		int inpLength = inputBuffer.getLength();
+		int outLength = 2 * inpLength;
 
-        int inOffset = inputBuffer.getOffset();
-        int outOffset = outputBuffer.getOffset();
-        for (int i = 0; i < inpLength; i++)
-        {
-            int temp = inData[inOffset++] & 0xff;
-            outData[outOffset++] = lutTableL[temp];
-            outData[outOffset++] = lutTableH[temp];
-        }
+		int inOffset = inputBuffer.getOffset();
+		int outOffset = outputBuffer.getOffset();
+		for (int i = 0; i < inpLength; i++) {
+			int temp = inData[inOffset++] & 0xff;
+			outData[outOffset++] = lutTableL[temp];
+			outData[outOffset++] = lutTableH[temp];
+		}
 
-        updateOutput(outputBuffer, outputFormat, outLength,
-            outputBuffer.getOffset());
+		updateOutput(outputBuffer, outputFormat, outLength, outputBuffer.getOffset());
 
-        return BUFFER_PROCESSED_OK;
-    }
+		return BUFFER_PROCESSED_OK;
+	}
 }

@@ -15,10 +15,12 @@
  */
 package org.jitsi.impl.neomedia.device;
 
-import org.jitsi.impl.neomedia.jmfext.media.protocol.audiosilence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.media.*;
-import java.util.*;
+import javax.media.MediaLocator;
+
+import org.jitsi.impl.neomedia.jmfext.media.protocol.audiosilence.DataSource;
 
 /**
  * Implements an {@llink AudioSystem} which produces silence without capturing
@@ -27,53 +29,35 @@ import java.util.*;
  *
  * @author Pawel Domas
  */
-public class AudioSilenceSystem
-    extends AudioSystem
-{
-    /**
-     * The protocol of the {@code MediaLocator} of {@code AudioSilenceSystem}.
-     */
-    private static final String LOCATOR_PROTOCOL
-        = LOCATOR_PROTOCOL_AUDIOSILENCE;
+public class AudioSilenceSystem extends AudioSystem {
+	/**
+	 * The protocol of the {@code MediaLocator} of {@code AudioSilenceSystem}.
+	 */
+	private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_AUDIOSILENCE;
 
-    /**
-     * Initializes a new {@code AudioSilenceSystem} instance.
-     */
-    protected AudioSilenceSystem()
-        throws Exception
-    {
-        super(AudioSystem.LOCATOR_PROTOCOL_AUDIOSILENCE);
-    }
+	/**
+	 * Initializes a new {@code AudioSilenceSystem} instance.
+	 */
+	protected AudioSilenceSystem() throws Exception {
+		super(AudioSystem.LOCATOR_PROTOCOL_AUDIOSILENCE);
+	}
 
-    @Override
-    protected void doInitialize()
-        throws Exception
-    {
-        List<CaptureDeviceInfo2> captureDevices
-            = new ArrayList<CaptureDeviceInfo2>(2);
+	@Override
+	protected void doInitialize() throws Exception {
+		List<CaptureDeviceInfo2> captureDevices = new ArrayList<CaptureDeviceInfo2>(2);
 
-        captureDevices.add(
-            new CaptureDeviceInfo2(
-                    "AudioSilenceCaptureDevice",
-                    new MediaLocator(LOCATOR_PROTOCOL + ":"),
-                    DataSource.SUPPORTED_FORMATS,
-                    null, null, null));
+		captureDevices.add(new CaptureDeviceInfo2("AudioSilenceCaptureDevice", new MediaLocator(LOCATOR_PROTOCOL + ":"),
+				DataSource.SUPPORTED_FORMATS, null, null, null));
 
-        // The following is a dummy audio capture device which does not even
-        // produce silence. It is suitable for scenarios in which an audio
-        // capture device is required but no audio samples from it are necessary
-        // such as negotiating signalling for audio but actually RTP translating
-        // other participants/peers' audio.
-        captureDevices.add(
-            new CaptureDeviceInfo2(
-                    "AudioSilenceCaptureDevice:" + DataSource.NO_TRANSFER_DATA,
-                    new MediaLocator(
-                            LOCATOR_PROTOCOL
-                                + ":"
-                                + DataSource.NO_TRANSFER_DATA),
-                    DataSource.SUPPORTED_FORMATS,
-                    null, null, null));
+		// The following is a dummy audio capture device which does not even
+		// produce silence. It is suitable for scenarios in which an audio
+		// capture device is required but no audio samples from it are necessary
+		// such as negotiating signalling for audio but actually RTP translating
+		// other participants/peers' audio.
+		captureDevices.add(new CaptureDeviceInfo2("AudioSilenceCaptureDevice:" + DataSource.NO_TRANSFER_DATA,
+				new MediaLocator(LOCATOR_PROTOCOL + ":" + DataSource.NO_TRANSFER_DATA), DataSource.SUPPORTED_FORMATS,
+				null, null, null));
 
-        setCaptureDevices(captureDevices);
-    }
+		setCaptureDevices(captureDevices);
+	}
 }

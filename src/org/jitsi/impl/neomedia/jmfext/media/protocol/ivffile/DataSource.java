@@ -16,14 +16,15 @@
 
 package org.jitsi.impl.neomedia.jmfext.media.protocol.ivffile;
 
-import java.io.*;
+import java.io.IOException;
 
-import javax.media.*;
-import javax.media.control.*;
-import javax.media.format.*;
+import javax.media.Format;
+import javax.media.control.FormatControl;
+import javax.media.format.VideoFormat;
 
-import org.jitsi.impl.neomedia.jmfext.media.protocol.*;
-import org.jitsi.service.neomedia.codec.*;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
+import org.jitsi.service.neomedia.codec.Constants;
 
 /**
  * Implements <tt>CaptureDevice</tt> and <tt>DataSource</tt> for the purposes of
@@ -31,71 +32,60 @@ import org.jitsi.service.neomedia.codec.*;
  *
  * @author Thomas Kuntz
  */
-public class DataSource
-    extends AbstractVideoPullBufferCaptureDevice
-{
-    /**
-     * The format of the VP8 video contained in the IVF file.
-     */
-    private Format[] SUPPORTED_FORMATS = new Format[1];
+public class DataSource extends AbstractVideoPullBufferCaptureDevice {
+	/**
+	 * The format of the VP8 video contained in the IVF file.
+	 */
+	private Format[] SUPPORTED_FORMATS = new Format[1];
 
-    /**
-     * The location of the IVF file this <tt>DataSource</tt> will use for the
-     * VP8 frames.
-     */
-    private String fileLocation;
+	/**
+	 * The location of the IVF file this <tt>DataSource</tt> will use for the VP8
+	 * frames.
+	 */
+	private String fileLocation;
 
-    /**
-     * The header of the IVF file this <tt>DataSource</tt> will use for the
-     * VP8 frames.
-     */
-    private IVFHeader ivfHeader;
+	/**
+	 * The header of the IVF file this <tt>DataSource</tt> will use for the VP8
+	 * frames.
+	 */
+	private IVFHeader ivfHeader;
 
-    /**
-     * doConnect allows us to initialize the DataSource with information that
-     * we couldn't have in the constructor, like the MediaLocator that give us
-     * the path of the ivf file which give us information on the format 
-     */
-    public void doConnect()
-        throws IOException
-    {
-        super.doConnect();
-        this.fileLocation = getLocator().getRemainder();
-        ivfHeader = new IVFHeader(this.fileLocation);
+	/**
+	 * doConnect allows us to initialize the DataSource with information that we
+	 * couldn't have in the constructor, like the MediaLocator that give us the path
+	 * of the ivf file which give us information on the format
+	 */
+	@Override
+	public void doConnect() throws IOException {
+		super.doConnect();
+		this.fileLocation = getLocator().getRemainder();
+		ivfHeader = new IVFHeader(this.fileLocation);
 
-        this.SUPPORTED_FORMATS[0] = new VideoFormat(
-                Constants.VP8,
-                ivfHeader.getDimension(),
-                Format.NOT_SPECIFIED,
-                Format.byteArray,
-                Format.NOT_SPECIFIED);
-    }
+		this.SUPPORTED_FORMATS[0] = new VideoFormat(Constants.VP8, ivfHeader.getDimension(), Format.NOT_SPECIFIED,
+				Format.byteArray, Format.NOT_SPECIFIED);
+	}
 
-    /**
-     * {@inheritDoc}
-     *
-     * Implements
-     * {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
-     */
-    protected IVFStream createStream(
-            int streamIndex,
-            FormatControl formatControl)
-    {
-        return new IVFStream(this, formatControl);
-    }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Implements
+	 * {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
+	 */
+	@Override
+	protected IVFStream createStream(int streamIndex, FormatControl formatControl) {
+		return new IVFStream(this, formatControl);
+	}
 
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides the super implementation in order to return the list of
-     * <tt>Format</tt>s hardcoded as supported in
-     * <tt>IVFCaptureDevice</tt> because the super looks them up by
-     * <tt>CaptureDeviceInfo</tt> and it doesn't have some information
-     * (like the framerate etc.).
-     */
-    @Override
-    protected Format[] getSupportedFormats(int streamIndex)
-    {
-        return SUPPORTED_FORMATS.clone();
-    }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Overrides the super implementation in order to return the list of
+	 * <tt>Format</tt>s hardcoded as supported in <tt>IVFCaptureDevice</tt> because
+	 * the super looks them up by <tt>CaptureDeviceInfo</tt> and it doesn't have
+	 * some information (like the framerate etc.).
+	 */
+	@Override
+	protected Format[] getSupportedFormats(int streamIndex) {
+		return SUPPORTED_FORMATS.clone();
+	}
 }

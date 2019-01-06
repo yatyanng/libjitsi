@@ -20,38 +20,30 @@ package org.jitsi.impl.neomedia.quicktime;
  *
  * @author Lyubomir Marinov
  */
-public class QTSampleBuffer
-    extends NSObject
-{
+public class QTSampleBuffer extends NSObject {
 
-    /**
-     * Initializes a new <tt>QTSampleBuffer</tt> which is to represent a
-     * specific QuickTime/QTKit <tt>QTSampleBuffer</tt> object.
-     *
-     * @param ptr the pointer to the QuickTime/QTKit <tt>QTSampleBuffer</tt>
-     * object to be represented by the new instance
-     */
-    public QTSampleBuffer(long ptr)
-    {
-        super(ptr);
-    }
+	/**
+	 * Initializes a new <tt>QTSampleBuffer</tt> which is to represent a specific
+	 * QuickTime/QTKit <tt>QTSampleBuffer</tt> object.
+	 *
+	 * @param ptr the pointer to the QuickTime/QTKit <tt>QTSampleBuffer</tt> object
+	 *            to be represented by the new instance
+	 */
+	public QTSampleBuffer(long ptr) {
+		super(ptr);
+	}
 
-    public byte[] bytesForAllSamples()
-    {
-        return bytesForAllSamples(getPtr());
-    }
+	public byte[] bytesForAllSamples() {
+		return bytesForAllSamples(getPtr());
+	}
 
-    private static native byte[] bytesForAllSamples(long ptr);
+	private static native byte[] bytesForAllSamples(long ptr);
 
-    public QTFormatDescription formatDescription()
-    {
-        long formatDescriptionPtr = formatDescription(getPtr());
+	public QTFormatDescription formatDescription() {
+		long formatDescriptionPtr = formatDescription(getPtr());
 
-        return
-            (formatDescriptionPtr == 0)
-                ? null
-                : new QTFormatDescription(formatDescriptionPtr);
-    }
+		return (formatDescriptionPtr == 0) ? null : new QTFormatDescription(formatDescriptionPtr);
+	}
 
-    private static native long formatDescription(long ptr);
+	private static native long formatDescription(long ptr);
 }

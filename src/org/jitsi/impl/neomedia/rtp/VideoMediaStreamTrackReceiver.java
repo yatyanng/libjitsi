@@ -15,46 +15,41 @@
  */
 package org.jitsi.impl.neomedia.rtp;
 
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.service.neomedia.*;
+import org.jitsi.impl.neomedia.MediaStreamImpl;
+import org.jitsi.service.neomedia.MediaStream;
+import org.jitsi.service.neomedia.RawPacket;
 
 /**
- * Extends the generic {@link MediaStreamTrackReceiver} with logic to update
- * its {@link MediaStreamTrackDesc}s with received packets.
+ * Extends the generic {@link MediaStreamTrackReceiver} with logic to update its
+ * {@link MediaStreamTrackDesc}s with received packets.
  *
  * @author George Politis
  * @author Boris Grozev
  */
-public class VideoMediaStreamTrackReceiver
-    extends MediaStreamTrackReceiver
-{
-    /**
-     * Initializes a new {@link VideoMediaStreamTrackReceiver} instance.
-     *
-     * @param stream The {@link MediaStream} that this instance receives
-     * {@link MediaStreamTrackDesc}s from.
-     */
-    public VideoMediaStreamTrackReceiver(MediaStreamImpl stream)
-    {
-        super(stream);
-    }
+public class VideoMediaStreamTrackReceiver extends MediaStreamTrackReceiver {
+	/**
+	 * Initializes a new {@link VideoMediaStreamTrackReceiver} instance.
+	 *
+	 * @param stream The {@link MediaStream} that this instance receives
+	 *               {@link MediaStreamTrackDesc}s from.
+	 */
+	public VideoMediaStreamTrackReceiver(MediaStreamImpl stream) {
+		super(stream);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public RawPacket reverseTransform(RawPacket pkt)
-    {
-        if (!pkt.isInvalid())
-        {
-            RTPEncodingDesc encoding = findRTPEncodingDesc(pkt);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public RawPacket reverseTransform(RawPacket pkt) {
+		if (!pkt.isInvalid()) {
+			RTPEncodingDesc encoding = findRTPEncodingDesc(pkt);
 
-            if (encoding != null)
-            {
-                encoding.update(pkt, System.currentTimeMillis());
-            }
-        }
+			if (encoding != null) {
+				encoding.update(pkt, System.currentTimeMillis());
+			}
+		}
 
-        return pkt;
-    }
+		return pkt;
+	}
 }

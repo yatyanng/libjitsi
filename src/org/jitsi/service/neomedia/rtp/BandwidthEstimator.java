@@ -18,78 +18,75 @@ package org.jitsi.service.neomedia.rtp;
 /**
  * @author Boris Grozev
  */
-public interface BandwidthEstimator
-{
-    /**
-     * Adds a listener to be notified about changes to the bandwidth estimation.
-     * @param listener
-     */
-    void addListener(Listener listener);
+public interface BandwidthEstimator {
+	/**
+	 * Adds a listener to be notified about changes to the bandwidth estimation.
+	 * 
+	 * @param listener
+	 */
+	void addListener(Listener listener);
 
-    /**
-     * Removes a listener.
-     * @param listener
-     */
-    void removeListener(Listener listener);
+	/**
+	 * Removes a listener.
+	 * 
+	 * @param listener
+	 */
+	void removeListener(Listener listener);
 
-    /**
-     * @return the latest estimate.
-     */
-    long getLatestEstimate();
+	/**
+	 * @return the latest estimate.
+	 */
+	long getLatestEstimate();
 
-    /**
-     * @return the latest values of the Receiver Estimated Maximum Bandwidth.
-     */
-    long getLatestREMB();
+	/**
+	 * @return the latest values of the Receiver Estimated Maximum Bandwidth.
+	 */
+	long getLatestREMB();
 
-    /**
-     * @return the {@link Statistics} specific to this bandwidth estimator.
-     */
-    Statistics getStatistics();
+	/**
+	 * @return the {@link Statistics} specific to this bandwidth estimator.
+	 */
+	Statistics getStatistics();
 
-    /**
-     * void SendSideBandwidthEstimation::UpdateReceiverEstimate
-     * This is the entry/update point for the estimated bitrate in the
-     * REMBPacket or a Delay Based Controller estimated bitrate when the
-     * Delay based controller and the loss based controller lives on the
-     * send side. see internet draft on "Congestion Control for RTCWEB"
-     */
-    void updateReceiverEstimate(long bandwidth);
+	/**
+	 * void SendSideBandwidthEstimation::UpdateReceiverEstimate This is the
+	 * entry/update point for the estimated bitrate in the REMBPacket or a Delay
+	 * Based Controller estimated bitrate when the Delay based controller and the
+	 * loss based controller lives on the send side. see internet draft on
+	 * "Congestion Control for RTCWEB"
+	 */
+	void updateReceiverEstimate(long bandwidth);
 
-    /**
-     * @return the latest effective fraction loss calculated by this
-     * {@link BandwidthEstimator}. The value is between 0 and 256 (corresponding
-     * to 0% and 100% respectively).
-     */
-    int getLatestFractionLoss();
+	/**
+	 * @return the latest effective fraction loss calculated by this
+	 *         {@link BandwidthEstimator}. The value is between 0 and 256
+	 *         (corresponding to 0% and 100% respectively).
+	 */
+	int getLatestFractionLoss();
 
-    interface Listener
-    {
-        void bandwidthEstimationChanged(long newValueBps);
-    }
+	interface Listener {
+		void bandwidthEstimationChanged(long newValueBps);
+	}
 
-    /**
-     * Holds stats specific to the bandwidth estimator.
-     */
-    interface Statistics
-    {
-        /**
-         * @return the number of millis spent in the loss-degraded state.
-         */
-        long getLossDegradedMs();
+	/**
+	 * Holds stats specific to the bandwidth estimator.
+	 */
+	interface Statistics {
+		/**
+		 * @return the number of millis spent in the loss-degraded state.
+		 */
+		long getLossDegradedMs();
 
-        /**
-         * @return the number of millis spent in the loss-limited state.
-         */
-        long getLossLimitedMs();
+		/**
+		 * @return the number of millis spent in the loss-limited state.
+		 */
+		long getLossLimitedMs();
 
-        /**
-         * @return the number of millis spent in the loss-free state.
-         */
-        long getLossFreeMs();
+		/**
+		 * @return the number of millis spent in the loss-free state.
+		 */
+		long getLossFreeMs();
 
-        void update(long nowMs);
-    }
+		void update(long nowMs);
+	}
 }
-
-

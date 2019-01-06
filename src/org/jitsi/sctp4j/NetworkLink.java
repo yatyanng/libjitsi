@@ -15,26 +15,25 @@
  */
 package org.jitsi.sctp4j;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Interface used by {@link SctpSocket} for sending network packets.
  *
- * FIXME: introduce offset and length parameters in order to be able to
- *        re-use single buffer instance
+ * FIXME: introduce offset and length parameters in order to be able to re-use
+ * single buffer instance
  *
  * @author Pawel Domas
  */
-public interface NetworkLink
-{
-    /**
-     * Callback triggered by <tt>SctpSocket</tt> whenever it wants to send some
-     * network packet.
-     * @param s source <tt>SctpSocket</tt> instance.
-     * @param packet network packet buffer.
-     *
-     * @throws java.io.IOException in case of transport error.
-     */
-    public void onConnOut(final SctpSocket s, final byte[] packet)
-        throws IOException;
+public interface NetworkLink {
+	/**
+	 * Callback triggered by <tt>SctpSocket</tt> whenever it wants to send some
+	 * network packet.
+	 * 
+	 * @param s      source <tt>SctpSocket</tt> instance.
+	 * @param packet network packet buffer.
+	 *
+	 * @throws java.io.IOException in case of transport error.
+	 */
+	public void onConnOut(final SctpSocket s, final byte[] packet) throws IOException;
 }

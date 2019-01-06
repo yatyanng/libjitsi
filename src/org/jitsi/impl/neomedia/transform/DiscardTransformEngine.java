@@ -15,13 +15,18 @@
  */
 package org.jitsi.impl.neomedia.transform;
 
-import net.sf.fmj.media.rtp.*;
-import org.jitsi.impl.neomedia.rtp.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.media.*;
-import java.util.*;
+import javax.media.Buffer;
+
+import org.jitsi.impl.neomedia.rtp.ResumableStreamRewriter;
+import org.jitsi.service.neomedia.MediaStream;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.Logger;
+import org.jitsi.util.RTCPUtils;
+
+import net.sf.fmj.media.rtp.RTCPPacket;
 
 /**
  * As the name suggests, the DiscardTransformEngine discards packets that are
@@ -33,155 +38,129 @@ import java.util.*;
  *
  * @author George Politis
  */
-public class DiscardTransformEngine
-    implements TransformEngine
-{
-    /**
-     * The <tt>Logger</tt> used by the <tt>DiscardTransformEngine</tt> class and
-     * its instances for logging output.
-     */
-    private static final Logger logger
-        = Logger.getLogger(DiscardTransformEngine.class);
+public class DiscardTransformEngine implements TransformEngine {
+	/**
+	 * The <tt>Logger</tt> used by the <tt>DiscardTransformEngine</tt> class and its
+	 * instances for logging output.
+	 */
+	private static final Logger logger = Logger.getLogger(DiscardTransformEngine.class);
 
-    /**
-     * A map of source ssrc to {@link ResumableStreamRewriter}.
-     */
-    private final Map<Long, ResumableStreamRewriter> ssrcToRewriter
-        = new HashMap<>();
+	/**
+	 * A map of source ssrc to {@link ResumableStreamRewriter}.
+	 */
+	private final Map<Long, ResumableStreamRewriter> ssrcToRewriter = new HashMap<>();
 
-    /**
-     * The {@link MediaStream} that owns this instance.
-     */
-    private final MediaStream stream;
+	/**
+	 * The {@link MediaStream} that owns this instance.
+	 */
+	private final MediaStream stream;
 
-    /**
-     * Ctor.
-     *
-     * @param stream the {@link MediaStream} that owns this instance.
-     */
-    public DiscardTransformEngine(MediaStream stream)
-    {
-        this.stream = stream;
-    }
+	/**
+	 * Ctor.
+	 *
+	 * @param stream the {@link MediaStream} that owns this instance.
+	 */
+	public DiscardTransformEngine(MediaStream stream) {
+		this.stream = stream;
+	}
 
-    /**
-     * The {@link PacketTransformer} for RTCP packets.
-     */
-    private final PacketTransformer rtpTransformer
-        = new SinglePacketTransformerAdapter()
-    {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public RawPacket reverseTransform(RawPacket pkt)
-        {
-            if (pkt == null)
-            {
-                return null;
-            }
+	/**
+	 * The {@link PacketTransformer} for RTCP packets.
+	 */
+	private final PacketTransformer rtpTransformer = new SinglePacketTransformerAdapter() {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public RawPacket reverseTransform(RawPacket pkt) {
+			if (pkt == null) {
+				return null;
+			}
 
-            boolean dropPkt
-                = (pkt.getFlags() & Buffer.FLAG_DISCARD) == Buffer.FLAG_DISCARD;
+			boolean dropPkt = (pkt.getFlags() & Buffer.FLAG_DISCARD) == Buffer.FLAG_DISCARD;
 
-            long ssrc = pkt.getSSRCAsLong();
-            ResumableStreamRewriter rewriter;
-            synchronized (ssrcToRewriter)
-            {
-                rewriter = ssrcToRewriter.get(ssrc);
-                if (rewriter == null)
-                {
-                    rewriter = new ResumableStreamRewriter();
-                    ssrcToRewriter.put(ssrc, rewriter);
-                }
-            }
+			long ssrc = pkt.getSSRCAsLong();
+			ResumableStreamRewriter rewriter;
+			synchronized (ssrcToRewriter) {
+				rewriter = ssrcToRewriter.get(ssrc);
+				if (rewriter == null) {
+					rewriter = new ResumableStreamRewriter();
+					ssrcToRewriter.put(ssrc, rewriter);
+				}
+			}
 
-            rewriter.rewriteRTP(
-                !dropPkt, pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
+			rewriter.rewriteRTP(!dropPkt, pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
 
-            if (logger.isDebugEnabled())
-            {
-                logger.debug((dropPkt ? "discarding " : "passing through ")
-                    + " RTP ssrc=" + pkt.getSSRCAsLong() + ", seqnum="
-                    + pkt.getSequenceNumber() + ", ts=" + pkt.getTimestamp()
-                    + ", streamHashCode=" + stream.hashCode());
-            }
+			if (logger.isDebugEnabled()) {
+				logger.debug((dropPkt ? "discarding " : "passing through ") + " RTP ssrc=" + pkt.getSSRCAsLong()
+						+ ", seqnum=" + pkt.getSequenceNumber() + ", ts=" + pkt.getTimestamp() + ", streamHashCode="
+						+ stream.hashCode());
+			}
 
-            return dropPkt ? null : pkt;
-        }
-    };
+			return dropPkt ? null : pkt;
+		}
+	};
 
-    /**
-     * The {@link PacketTransformer} for RTCP packets.
-     */
-    private final PacketTransformer rtcpTransformer
-        = new SinglePacketTransformerAdapter()
-    {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public RawPacket reverseTransform(RawPacket pkt)
-        {
-            if (pkt == null)
-            {
-                return pkt;
-            }
+	/**
+	 * The {@link PacketTransformer} for RTCP packets.
+	 */
+	private final PacketTransformer rtcpTransformer = new SinglePacketTransformerAdapter() {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public RawPacket reverseTransform(RawPacket pkt) {
+			if (pkt == null) {
+				return pkt;
+			}
 
-            byte[] buf = pkt.getBuffer();
-            int offset = pkt.getOffset(), length =  pkt.getLength();
+			byte[] buf = pkt.getBuffer();
+			int offset = pkt.getOffset(), length = pkt.getLength();
 
-            // The correct thing to do here is a loop because the RTCP packet
-            // can be compound. However, in practice we haven't seen multiple
-            // SRs being bundled in the same compound packet, and we're only
-            // interested in SRs.
+			// The correct thing to do here is a loop because the RTCP packet
+			// can be compound. However, in practice we haven't seen multiple
+			// SRs being bundled in the same compound packet, and we're only
+			// interested in SRs.
 
-            // Check RTCP packet validity. This makes sure that pktLen > 0
-            // so this loop will eventually terminate.
-            if (!RTCPUtils.isHeaderValid(buf, offset, length))
-            {
-                return pkt;
-            }
+			// Check RTCP packet validity. This makes sure that pktLen > 0
+			// so this loop will eventually terminate.
+			if (!RTCPUtils.isHeaderValid(buf, offset, length)) {
+				return pkt;
+			}
 
-            int pktLen = RTCPUtils.getLength(buf, offset, length);
+			int pktLen = RTCPUtils.getLength(buf, offset, length);
 
-            int pt = RTCPUtils.getPacketType(buf, offset, pktLen);
-            if (pt == RTCPPacket.SR)
-            {
-                long ssrc = RawPacket.getRTCPSSRC(buf, offset, pktLen);
+			int pt = RTCPUtils.getPacketType(buf, offset, pktLen);
+			if (pt == RTCPPacket.SR) {
+				long ssrc = RawPacket.getRTCPSSRC(buf, offset, pktLen);
 
-                ResumableStreamRewriter rewriter;
-                synchronized (ssrcToRewriter)
-                {
-                    rewriter = ssrcToRewriter.get(ssrc);
-                }
+				ResumableStreamRewriter rewriter;
+				synchronized (ssrcToRewriter) {
+					rewriter = ssrcToRewriter.get(ssrc);
+				}
 
-                if (rewriter != null)
-                {
-                    rewriter.processRTCP(
-                        true /* rewrite */, buf, offset, pktLen);
-                }
-            }
+				if (rewriter != null) {
+					rewriter.processRTCP(true /* rewrite */, buf, offset, pktLen);
+				}
+			}
 
-            return pkt;
-        }
-    };
+			return pkt;
+		}
+	};
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTPTransformer()
-    {
-        return rtpTransformer;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTPTransformer() {
+		return rtpTransformer;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTCPTransformer()
-    {
-        return rtcpTransformer;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTCPTransformer() {
+		return rtcpTransformer;
+	}
 }

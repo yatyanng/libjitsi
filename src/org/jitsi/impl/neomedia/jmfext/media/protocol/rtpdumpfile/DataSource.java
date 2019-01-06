@@ -16,29 +16,26 @@
 
 package org.jitsi.impl.neomedia.jmfext.media.protocol.rtpdumpfile;
 
-import javax.media.control.*;
+import javax.media.control.FormatControl;
 
-import org.jitsi.impl.neomedia.jmfext.media.protocol.*;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
 
 /**
- * Implements the <tt>CaptureDevice</tt> and <tt>DataSource</tt> for the
- * purpose of rtpdump file streaming.
+ * Implements the <tt>CaptureDevice</tt> and <tt>DataSource</tt> for the purpose
+ * of rtpdump file streaming.
  *
  * @author Thomas Kuntz
  */
-public class DataSource
-    extends AbstractVideoPullBufferCaptureDevice
-{
-    /**
-     * {@inheritDoc}
-     *
-     * Implements
-     * {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
-     */
-    protected RtpdumpStream createStream(
-            int streamIndex,
-            FormatControl formatControl)
-    {
-        return new RtpdumpStream(this, formatControl);
-    }
+public class DataSource extends AbstractVideoPullBufferCaptureDevice {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * Implements
+	 * {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
+	 */
+	@Override
+	protected RtpdumpStream createStream(int streamIndex, FormatControl formatControl) {
+		return new RtpdumpStream(this, formatControl);
+	}
 }

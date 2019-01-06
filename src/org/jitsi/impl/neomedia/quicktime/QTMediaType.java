@@ -20,22 +20,21 @@ package org.jitsi.impl.neomedia.quicktime;
  *
  * @author Lyubomir Marinov
  */
-public enum QTMediaType
-{
+public enum QTMediaType {
 
-    /**
-     * The QTKit type of multiplexed media which may contain audio, video, and
-     * other data in a single stream.
-     */
-    Muxed,
+	/**
+	 * The QTKit type of multiplexed media which may contain audio, video, and other
+	 * data in a single stream.
+	 */
+	Muxed,
 
-    /**
-     * The QTKit type of media which contains only audio frames.
-     */
-    Sound,
+	/**
+	 * The QTKit type of media which contains only audio frames.
+	 */
+	Sound,
 
-    /**
-     * The QTKit type of media which contains only video frames.
-     */
-    Video
+	/**
+	 * The QTKit type of media which contains only video frames.
+	 */
+	Video
 }

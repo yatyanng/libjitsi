@@ -15,40 +15,37 @@
  */
 package org.jitsi.impl.neomedia.rtp;
 
-import net.sf.fmj.media.rtp.util.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.Logger;
+
+import net.sf.fmj.media.rtp.util.BadFormatException;
+import net.sf.fmj.media.rtp.util.RTPPacket;
+import net.sf.fmj.media.rtp.util.UDPPacket;
 
 /**
  * Extends the FMJ <tt>RTPPacketParser</tt> with additional functionality.
  *
  * @author George Politis
  */
-public class RTPPacketParserEx
-        extends net.sf.fmj.media.rtp.util.RTPPacketParser
-{
-    private static final Logger logger
-            = Logger.getLogger(RTPPacketParserEx.class);
+public class RTPPacketParserEx extends net.sf.fmj.media.rtp.util.RTPPacketParser {
+	private static final Logger logger = Logger.getLogger(RTPPacketParserEx.class);
 
-    public RTPPacket parse(RawPacket pkt) throws BadFormatException
-    {
-        if (pkt == null)
-        {
-            logger.warn("pkt is null.");
-            return null;
-        }
+	public RTPPacket parse(RawPacket pkt) throws BadFormatException {
+		if (pkt == null) {
+			logger.warn("pkt is null.");
+			return null;
+		}
 
-        return parse(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
-    }
+		return parse(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
+	}
 
-    public RTPPacket parse(byte[] data, int offset, int length) throws BadFormatException
-    {
-        UDPPacket udp = new UDPPacket();
+	public RTPPacket parse(byte[] data, int offset, int length) throws BadFormatException {
+		UDPPacket udp = new UDPPacket();
 
-        udp.data = data;
-        udp.length = length;
-        udp.offset = offset;
-        udp.received = false;
-        return parse(udp);
-    }
+		udp.data = data;
+		udp.length = length;
+		udp.offset = offset;
+		udp.received = false;
+		return parse(udp);
+	}
 }

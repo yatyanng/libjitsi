@@ -16,9 +16,9 @@
 
 package org.jitsi.impl.neomedia.jmfext.media.protocol.rtpdumpfile;
 
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import org.jitsi.impl.neomedia.RTPPacketPredicate;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.RTPUtils;
 
 /**
  * Suggests a schedule method that puts the current thread to sleep for X milis,
@@ -26,61 +26,51 @@ import org.jitsi.util.*;
  *
  * @author George Politis
  */
-public class RawPacketScheduler
-{
-    /**
-     * The RTP clock rate, used to interpret the RTP timestamps read from the
-     * file.
-     */
-    private final long clockRate;
+public class RawPacketScheduler {
+	/**
+	 * The RTP clock rate, used to interpret the RTP timestamps read from the file.
+	 */
+	private final long clockRate;
 
-    /**
-     * Ctor.
-     *
-     * @param clockRate
-     */
-    public RawPacketScheduler(long clockRate)
-    {
-        this.clockRate = clockRate;
-    }
+	/**
+	 * Ctor.
+	 *
+	 * @param clockRate
+	 */
+	public RawPacketScheduler(long clockRate) {
+		this.clockRate = clockRate;
+	}
 
-    /**
-     * The timestamp of the last rtp packet (the timestamp change only when
-     * a marked packet has been sent).
-     */
-    private long lastRtpTimestamp = -1;
+	/**
+	 * The timestamp of the last rtp packet (the timestamp change only when a marked
+	 * packet has been sent).
+	 */
+	private long lastRtpTimestamp = -1;
 
-    /**
-     * puts the current thread to sleep for X milis, where X is such that RTP
-     * timestamps and a given clock are respected.
-     *
-     * @param rtpPacket the <tt>RTPPacket</tt> to schedule.
-     */
-    public void schedule(RawPacket rtpPacket)
-        throws InterruptedException
-    {
-        if (!RTPPacketPredicate.INSTANCE.test(rtpPacket))
-        {
-            return;
-        }
+	/**
+	 * puts the current thread to sleep for X milis, where X is such that RTP
+	 * timestamps and a given clock are respected.
+	 *
+	 * @param rtpPacket the <tt>RTPPacket</tt> to schedule.
+	 */
+	public void schedule(RawPacket rtpPacket) throws InterruptedException {
+		if (!RTPPacketPredicate.INSTANCE.test(rtpPacket)) {
+			return;
+		}
 
-        if (lastRtpTimestamp == -1)
-        {
-            lastRtpTimestamp = rtpPacket.getTimestamp();
-            return;
-        }
+		if (lastRtpTimestamp == -1) {
+			lastRtpTimestamp = rtpPacket.getTimestamp();
+			return;
+		}
 
-        long previous = lastRtpTimestamp;
-        lastRtpTimestamp = rtpPacket.getTimestamp();
+		long previous = lastRtpTimestamp;
+		lastRtpTimestamp = rtpPacket.getTimestamp();
 
-        long rtpDiff = RTPUtils.rtpTimestampDiff(lastRtpTimestamp, previous);
+		long rtpDiff = RTPUtils.rtpTimestampDiff(lastRtpTimestamp, previous);
 
-        long nanos = (rtpDiff * 1000 * 1000 * 1000) / clockRate;
-        if (nanos > 0)
-        {
-            Thread.sleep(
-                    nanos / 1000000,
-                    (int) (nanos % 1000000));
-        }
-    }
+		long nanos = (rtpDiff * 1000 * 1000 * 1000) / clockRate;
+		if (nanos > 0) {
+			Thread.sleep(nanos / 1000000, (int) (nanos % 1000000));
+		}
+	}
 }

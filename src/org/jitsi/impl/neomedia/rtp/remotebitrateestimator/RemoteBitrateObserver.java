@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.rtp.remotebitrateestimator;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * <tt>RemoteBitrateObserver</tt> is used to signal changes in bitrate estimates
@@ -25,14 +25,13 @@ import java.util.*;
  *
  * @author Lyubomir Marinov
  */
-public interface RemoteBitrateObserver
-{
-    /**
-     * Called when a receive channel group has a new bitrate estimate for the
-     * incoming streams.
-     *
-     * @param ssrcs
-     * @param bitrate
-     */
-    void onReceiveBitrateChanged(Collection<Long> ssrcs, long bitrate);
+public interface RemoteBitrateObserver {
+	/**
+	 * Called when a receive channel group has a new bitrate estimate for the
+	 * incoming streams.
+	 *
+	 * @param ssrcs
+	 * @param bitrate
+	 */
+	void onReceiveBitrateChanged(Collection<Long> ssrcs, long bitrate);
 }

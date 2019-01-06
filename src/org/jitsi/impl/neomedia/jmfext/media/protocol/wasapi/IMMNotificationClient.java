@@ -22,15 +22,14 @@ package org.jitsi.impl.neomedia.jmfext.media.protocol.wasapi;
  *
  * @author Lyubomir Marinov
  */
-public interface IMMNotificationClient
-{
-    void OnDefaultDeviceChanged(int flow, int role, String pwstrDefaultDevice);
+public interface IMMNotificationClient {
+	void OnDefaultDeviceChanged(int flow, int role, String pwstrDefaultDevice);
 
-    void OnDeviceAdded(String pwstrDeviceId);
+	void OnDeviceAdded(String pwstrDeviceId);
 
-    void OnDeviceRemoved(String pwstrDeviceId);
+	void OnDeviceRemoved(String pwstrDeviceId);
 
-    void OnDeviceStateChanged(String pwstrDeviceId, int dwNewState);
+	void OnDeviceStateChanged(String pwstrDeviceId, int dwNewState);
 
-    void OnPropertyValueChanged(String pwstrDeviceId, long key);
+	void OnPropertyValueChanged(String pwstrDeviceId, long key);
 }

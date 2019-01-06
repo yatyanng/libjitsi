@@ -15,23 +15,20 @@
  */
 package org.jitsi.service.libjitsi;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * Activates libjitsi in an OSGi environment.
  */
-public class LibJitsiActivator
-    implements BundleActivator
-{
-    public void start(BundleContext bundleContext)
-        throws Exception
-    {
-        LibJitsi.start(bundleContext);
-    }
+public class LibJitsiActivator implements BundleActivator {
+	@Override
+	public void start(BundleContext bundleContext) throws Exception {
+		LibJitsi.start(bundleContext);
+	}
 
-    public void stop(BundleContext bundleContext)
-        throws Exception
-    {
-        LibJitsi.stop();
-    }
+	@Override
+	public void stop(BundleContext bundleContext) throws Exception {
+		LibJitsi.stop();
+	}
 }

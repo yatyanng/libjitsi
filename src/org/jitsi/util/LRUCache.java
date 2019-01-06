@@ -15,34 +15,32 @@
  */
 package org.jitsi.util;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author George Politis
  */
-public class LRUCache<K, V> extends LinkedHashMap<K, V>
-{
-    /**
-     *
-     */
-    private int cacheSize;
+public class LRUCache<K, V> extends LinkedHashMap<K, V> {
+	/**
+	 *
+	 */
+	private int cacheSize;
 
-    /**
-     * Ctor.
-     *
-     * @param cacheSize
-     */
-    public LRUCache(int cacheSize)
-    {
-        this.cacheSize = cacheSize;
-    }
+	/**
+	 * Ctor.
+	 *
+	 * @param cacheSize
+	 */
+	public LRUCache(int cacheSize) {
+		this.cacheSize = cacheSize;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<K, V> eldest)
-    {
-        return size() > cacheSize;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+		return size() > cacheSize;
+	}
 }

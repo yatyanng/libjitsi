@@ -15,68 +15,63 @@
  */
 package org.jitsi.impl.neomedia.transform;
 
-import org.jitsi.impl.neomedia.*;
-import org.jitsi.service.neomedia.*;
+import org.jitsi.impl.neomedia.AbstractRTPConnector;
+import org.jitsi.service.neomedia.AbstractSrtpControl;
+import org.jitsi.service.neomedia.MediaType;
+import org.jitsi.service.neomedia.SrtpControl;
+import org.jitsi.service.neomedia.SrtpControlType;
 
 /**
- * Implements a no-op {@link SrtpControl}, i.e. one which does not perform
- * SRTP and does not have a transform engine.
+ * Implements a no-op {@link SrtpControl}, i.e. one which does not perform SRTP
+ * and does not have a transform engine.
  *
  * @author Boris Grozev
  */
-public class NullSrtpControl
-    extends AbstractSrtpControl<SrtpControl.TransformEngine>
-{
-    /**
-     * Initializes a new {@link NullSrtpControl} instance.
-     */
-    public NullSrtpControl()
-    {
-        super(SrtpControlType.NULL);
-    }
+public class NullSrtpControl extends AbstractSrtpControl<SrtpControl.TransformEngine> {
+	/**
+	 * Initializes a new {@link NullSrtpControl} instance.
+	 */
+	public NullSrtpControl() {
+		super(SrtpControlType.NULL);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean getSecureCommunicationStatus()
-    {
-        return false;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean getSecureCommunicationStatus() {
+		return false;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean requiresSecureSignalingTransport()
-    {
-        return false;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean requiresSecureSignalingTransport() {
+		return false;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setConnector(AbstractRTPConnector connector)
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setConnector(AbstractRTPConnector connector) {
 
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void start(MediaType mediaType)
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void start(MediaType mediaType) {
 
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected TransformEngine createTransformEngine()
-    {
-        return null;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected TransformEngine createTransformEngine() {
+		return null;
+	}
 }

@@ -20,37 +20,32 @@ package org.jitsi.impl.neomedia.quicktime;
  *
  * @author Lyubomir Marinov
  */
-public class NSMutableDictionary
-    extends NSDictionary
-{
+public class NSMutableDictionary extends NSDictionary {
 
-    /**
-     * Initializes a new <tt>NSMutableDictionary</tt> instance which is to
-     * represent a new Objective-C <tt>NSMutableDictionary</tt> object.
-     */
-    public NSMutableDictionary()
-    {
-        this(allocAndInit());
-    }
+	/**
+	 * Initializes a new <tt>NSMutableDictionary</tt> instance which is to represent
+	 * a new Objective-C <tt>NSMutableDictionary</tt> object.
+	 */
+	public NSMutableDictionary() {
+		this(allocAndInit());
+	}
 
-    /**
-     * Initializes a new <tt>NSMutableDictionary</tt> instance which is to
-     * represent a specific Objective-C <tt>NSMutableDictionary</tt> object.
-     *
-     * @param ptr the pointer to the Objective-C <tt>NSMutableDictionary</tt>
-     * object to be represented by the new instance
-     */
-    public NSMutableDictionary(long ptr)
-    {
-        super(ptr);
-    }
+	/**
+	 * Initializes a new <tt>NSMutableDictionary</tt> instance which is to represent
+	 * a specific Objective-C <tt>NSMutableDictionary</tt> object.
+	 *
+	 * @param ptr the pointer to the Objective-C <tt>NSMutableDictionary</tt> object
+	 *            to be represented by the new instance
+	 */
+	public NSMutableDictionary(long ptr) {
+		super(ptr);
+	}
 
-    private static native long allocAndInit();
+	private static native long allocAndInit();
 
-    public void setIntForKey(int value, long key)
-    {
-        setIntForKey(getPtr(), value, key);
-    }
+	public void setIntForKey(int value, long key) {
+		setIntForKey(getPtr(), value, key);
+	}
 
-    private static native void setIntForKey(long ptr, int value, long key);
+	private static native void setIntForKey(long ptr, int value, long key);
 }

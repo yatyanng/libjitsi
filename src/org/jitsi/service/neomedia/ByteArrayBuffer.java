@@ -21,49 +21,48 @@ package org.jitsi.service.neomedia;
  *
  * @author George Politis
  */
-public interface ByteArrayBuffer
-{
-    /**
-     * Gets the byte buffer that supports this instance.
-     *
-     * @return the byte buffer that supports this instance.
-     */
-    byte[] getBuffer();
+public interface ByteArrayBuffer {
+	/**
+	 * Gets the byte buffer that supports this instance.
+	 *
+	 * @return the byte buffer that supports this instance.
+	 */
+	byte[] getBuffer();
 
-    /**
-     * Gets the offset in the byte buffer where the actual data starts.
-     *
-     * @return the offset in the byte buffer where the actual data starts.
-     */
-    int getOffset();
+	/**
+	 * Gets the offset in the byte buffer where the actual data starts.
+	 *
+	 * @return the offset in the byte buffer where the actual data starts.
+	 */
+	int getOffset();
 
-    /**
-     * Gets the length of the data in the buffer.
-     *
-     * @return the length of the data in the buffer.
-     */
-    int getLength();
+	/**
+	 * Gets the length of the data in the buffer.
+	 *
+	 * @return the length of the data in the buffer.
+	 */
+	int getLength();
 
-    /**
-     * Sets the length of the data in the buffer.
-     *
-     * @param len the length of the data in the buffer.
-     */
-    void setLength(int len);
+	/**
+	 * Sets the length of the data in the buffer.
+	 *
+	 * @param len the length of the data in the buffer.
+	 */
+	void setLength(int len);
 
-    /**
-     * Sets the offset of the data in the buffer.
-     *
-     * @param off the offset of the data in the buffer.
-     */
-    void setOffset(int off);
+	/**
+	 * Sets the offset of the data in the buffer.
+	 *
+	 * @param off the offset of the data in the buffer.
+	 */
+	void setOffset(int off);
 
-    /**
-     * Perform checks on the byte buffer represented by this instance and
-     * return <tt>true</tt> if it is found to be invalid.
-     *
-     * @return <tt>true</tt> if the byte buffer represented by this
-     * instance is found to be invalid, <tt>false</tt> otherwise.
-     */
-    boolean isInvalid();
+	/**
+	 * Perform checks on the byte buffer represented by this instance and return
+	 * <tt>true</tt> if it is found to be invalid.
+	 *
+	 * @return <tt>true</tt> if the byte buffer represented by this instance is
+	 *         found to be invalid, <tt>false</tt> otherwise.
+	 */
+	boolean isInvalid();
 }

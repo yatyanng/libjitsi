@@ -21,19 +21,16 @@ package org.jitsi.impl.neomedia;
  *
  * @author George Politis
  */
-public class RTPPacketPredicate
-    extends AbstractRTPPacketPredicate
-{
-    /**
-     * The singleton instance of this class.
-     */
-    public static final RTPPacketPredicate INSTANCE = new RTPPacketPredicate();
+public class RTPPacketPredicate extends AbstractRTPPacketPredicate {
+	/**
+	 * The singleton instance of this class.
+	 */
+	public static final RTPPacketPredicate INSTANCE = new RTPPacketPredicate();
 
-    /**
-     * Ctor.
-     */
-    public RTPPacketPredicate()
-    {
-        super(false);
-    }
+	/**
+	 * Ctor.
+	 */
+	public RTPPacketPredicate() {
+		super(false);
+	}
 }

@@ -21,26 +21,24 @@ package org.jitsi.impl.neomedia.control;
  *
  * @author Lyubomir Marinov
  */
-public class ControlsAdapter
-    extends AbstractControls
-{
+public class ControlsAdapter extends AbstractControls {
 
-    /**
-     * The constant which represents an empty array of controls. Explicitly
-     * defined in order to avoid unnecessary allocations.
-     */
-    public static final Object[] EMPTY_CONTROLS = new Object[0];
+	/**
+	 * The constant which represents an empty array of controls. Explicitly defined
+	 * in order to avoid unnecessary allocations.
+	 */
+	public static final Object[] EMPTY_CONTROLS = new Object[0];
 
-    /**
-     * Implements {@link javax.media.Controls#getControls()}. Gets the controls
-     * available for the owner of this instance. The current implementation
-     * returns an empty array because it has no available controls.
-     *
-     * @return an array of <tt>Object</tt>s which represent the controls
-     * available for the owner of this instance
-     */
-    public Object[] getControls()
-    {
-        return EMPTY_CONTROLS;
-    }
+	/**
+	 * Implements {@link javax.media.Controls#getControls()}. Gets the controls
+	 * available for the owner of this instance. The current implementation returns
+	 * an empty array because it has no available controls.
+	 *
+	 * @return an array of <tt>Object</tt>s which represent the controls available
+	 *         for the owner of this instance
+	 */
+	@Override
+	public Object[] getControls() {
+		return EMPTY_CONTROLS;
+	}
 }

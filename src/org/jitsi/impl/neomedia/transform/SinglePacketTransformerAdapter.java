@@ -15,45 +15,39 @@
  */
 package org.jitsi.impl.neomedia.transform;
 
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.function.*;
+import org.jitsi.service.neomedia.ByteArrayBuffer;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.function.Predicate;
 
 /**
  *
  * @author Lyubomir Marinov
  */
-public class SinglePacketTransformerAdapter
-    extends SinglePacketTransformer
-{
-    /**
-     * Ctor.
-     */
-    public SinglePacketTransformerAdapter()
-    {
-        super();
-    }
+public class SinglePacketTransformerAdapter extends SinglePacketTransformer {
+	/**
+	 * Ctor.
+	 */
+	public SinglePacketTransformerAdapter() {
+		super();
+	}
 
-    /**
-     * Ctor.
-     *
-     * @param packetPredicate the <tt>PacketPredicate</tt> to use to match
-     * packets to (reverse) transform.
-     */
-    public SinglePacketTransformerAdapter(
-        Predicate<ByteArrayBuffer> packetPredicate)
-    {
-        super(packetPredicate);
-    }
+	/**
+	 * Ctor.
+	 *
+	 * @param packetPredicate the <tt>PacketPredicate</tt> to use to match packets
+	 *                        to (reverse) transform.
+	 */
+	public SinglePacketTransformerAdapter(Predicate<ByteArrayBuffer> packetPredicate) {
+		super(packetPredicate);
+	}
 
-    @Override
-    public RawPacket reverseTransform(RawPacket pkt)
-    {
-        return pkt;
-    }
+	@Override
+	public RawPacket reverseTransform(RawPacket pkt) {
+		return pkt;
+	}
 
-    @Override
-    public RawPacket transform(RawPacket pkt)
-    {
-        return pkt;
-    }
+	@Override
+	public RawPacket transform(RawPacket pkt) {
+		return pkt;
+	}
 }

@@ -24,7 +24,6 @@ package org.jitsi.util.function;
  */
 
 @Deprecated
-public interface Predicate<T>
-{
-    boolean test(T t);
+public interface Predicate<T> {
+	boolean test(T t);
 }

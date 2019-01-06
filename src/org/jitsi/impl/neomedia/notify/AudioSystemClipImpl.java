@@ -15,15 +15,22 @@
  */
 package org.jitsi.impl.neomedia.notify;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
-import javax.media.*;
-import javax.media.format.*;
+import javax.media.Buffer;
+import javax.media.Codec;
+import javax.media.Format;
+import javax.media.PlugIn;
+import javax.media.Renderer;
+import javax.media.ResourceUnavailableException;
+import javax.media.format.AudioFormat;
 
-import org.jitsi.impl.neomedia.codec.audio.speex.*;
-import org.jitsi.impl.neomedia.device.*;
-import org.jitsi.service.audionotifier.*;
-import org.jitsi.util.*;
+import org.jitsi.impl.neomedia.codec.audio.speex.SpeexResampler;
+import org.jitsi.impl.neomedia.device.AudioSystem;
+import org.jitsi.service.audionotifier.AbstractSCAudioClip;
+import org.jitsi.service.audionotifier.AudioNotifierService;
+import org.jitsi.util.Logger;
 
 /**
  * Implementation of SCAudioClip using PortAudio.
@@ -31,342 +38,260 @@ import org.jitsi.util.*;
  * @author Damyian Minkov
  * @author Lyubomir Marinov
  */
-public class AudioSystemClipImpl
-    extends AbstractSCAudioClip
-{
-    /**
-     * The default length of {@link #bufferData}.
-     */
-    private static final int DEFAULT_BUFFER_DATA_LENGTH = 8 * 1024;
+public class AudioSystemClipImpl extends AbstractSCAudioClip {
+	/**
+	 * The default length of {@link #bufferData}.
+	 */
+	private static final int DEFAULT_BUFFER_DATA_LENGTH = 8 * 1024;
 
-    /**
-     * The <tt>Logger</tt> used by the <tt>AudioSystemClipImpl</tt> class and
-     * its instances for logging output.
-     */
-    private static final Logger logger
-        = Logger.getLogger(AudioSystemClipImpl.class);
+	/**
+	 * The <tt>Logger</tt> used by the <tt>AudioSystemClipImpl</tt> class and its
+	 * instances for logging output.
+	 */
+	private static final Logger logger = Logger.getLogger(AudioSystemClipImpl.class);
 
-    /**
-     * The minimum duration in milliseconds to be assumed for the audio streams
-     * played by <tt>AudioSystemClipImpl</tt> in order to ensure that they are
-     * played back long enough to be heard.
-     */
-    private static final long MIN_AUDIO_STREAM_DURATION = 200;
+	/**
+	 * The minimum duration in milliseconds to be assumed for the audio streams
+	 * played by <tt>AudioSystemClipImpl</tt> in order to ensure that they are
+	 * played back long enough to be heard.
+	 */
+	private static final long MIN_AUDIO_STREAM_DURATION = 200;
 
-    private final AudioSystem audioSystem;
+	private final AudioSystem audioSystem;
 
-    private Buffer buffer;
+	private Buffer buffer;
 
-    private byte[] bufferData;
+	private byte[] bufferData;
 
-    private final boolean playback;
+	private final boolean playback;
 
-    private Renderer renderer;
+	private Renderer renderer;
 
-    /**
-     * Creates the audio clip and initializes the listener used from the
-     * loop timer.
-     *
-     * @param url the URL pointing to the audio file
-     * @param audioNotifier the audio notify service
-     * @param playback to use playback or notification device
-     * @throws IOException cannot audio clip with supplied URL.
-     */
-    public AudioSystemClipImpl(
-            String url,
-            AudioNotifierService audioNotifier,
-            AudioSystem audioSystem,
-            boolean playback)
-        throws IOException
-    {
-        super(url, audioNotifier);
+	/**
+	 * Creates the audio clip and initializes the listener used from the loop timer.
+	 *
+	 * @param url           the URL pointing to the audio file
+	 * @param audioNotifier the audio notify service
+	 * @param playback      to use playback or notification device
+	 * @throws IOException cannot audio clip with supplied URL.
+	 */
+	public AudioSystemClipImpl(String url, AudioNotifierService audioNotifier, AudioSystem audioSystem,
+			boolean playback) throws IOException {
+		super(url, audioNotifier);
 
-        this.audioSystem = audioSystem;
-        this.playback = playback;
-    }
+		this.audioSystem = audioSystem;
+		this.playback = playback;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void enterRunInPlayThread()
-    {
-        buffer = new Buffer();
-        bufferData = new byte[DEFAULT_BUFFER_DATA_LENGTH];
-        buffer.setData(bufferData);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void enterRunInPlayThread() {
+		buffer = new Buffer();
+		bufferData = new byte[DEFAULT_BUFFER_DATA_LENGTH];
+		buffer.setData(bufferData);
 
-        renderer = audioSystem.createRenderer(playback);
-    }
+		renderer = audioSystem.createRenderer(playback);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void exitRunInPlayThread()
-    {
-        buffer = null;
-        bufferData = null;
-        renderer = null;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void exitRunInPlayThread() {
+		buffer = null;
+		bufferData = null;
+		renderer = null;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void exitRunOnceInPlayThread()
-    {
-        try
-        {
-            renderer.stop();
-        }
-        finally
-        {
-            renderer.close();
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void exitRunOnceInPlayThread() {
+		try {
+			renderer.stop();
+		} finally {
+			renderer.close();
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    protected boolean runOnceInPlayThread()
-    {
-        if (renderer == null || buffer == null)
-        {
-            return false;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean runOnceInPlayThread() {
+		if (renderer == null || buffer == null) {
+			return false;
+		}
 
-        InputStream audioStream = null;
+		InputStream audioStream = null;
 
-        try
-        {
-            audioStream = audioSystem.getAudioInputStream(uri);
-        }
-        catch (IOException ioex)
-        {
-            logger.error("Failed to get audio stream " + uri, ioex);
-        }
-        if (audioStream == null)
-            return false;
+		try {
+			audioStream = audioSystem.getAudioInputStream(uri);
+		} catch (IOException ioex) {
+			logger.error("Failed to get audio stream " + uri, ioex);
+		}
+		if (audioStream == null)
+			return false;
 
-        Codec resampler = null;
-        boolean success = true;
-        AudioFormat audioStreamFormat = null;
-        int audioStreamLength = 0;
-        long rendererProcessStartTime = 0;
+		Codec resampler = null;
+		boolean success = true;
+		AudioFormat audioStreamFormat = null;
+		int audioStreamLength = 0;
+		long rendererProcessStartTime = 0;
 
-        try
-        {
-            Format rendererFormat
-                = audioStreamFormat
-                    = audioSystem.getFormat(audioStream);
+		try {
+			Format rendererFormat = audioStreamFormat = audioSystem.getFormat(audioStream);
 
-            if (rendererFormat == null)
-                return false;
+			if (rendererFormat == null)
+				return false;
 
-            Format resamplerFormat = null;
+			Format resamplerFormat = null;
 
-            if (renderer.setInputFormat(rendererFormat) == null)
-            {
-                /*
-                 * Try to negotiate a resampling of the audioStream to one of
-                 * the formats supported by the renderer.
-                 */
-                resampler = new SpeexResampler();
-                resamplerFormat = rendererFormat;
-                resampler.setInputFormat(resamplerFormat);
+			if (renderer.setInputFormat(rendererFormat) == null) {
+				/*
+				 * Try to negotiate a resampling of the audioStream to one of the formats
+				 * supported by the renderer.
+				 */
+				resampler = new SpeexResampler();
+				resamplerFormat = rendererFormat;
+				resampler.setInputFormat(resamplerFormat);
 
-                Format[] supportedResamplerFormats
-                    = resampler.getSupportedOutputFormats(resamplerFormat);
+				Format[] supportedResamplerFormats = resampler.getSupportedOutputFormats(resamplerFormat);
 
-                for (Format supportedRendererFormat
-                        : renderer.getSupportedInputFormats())
-                {
-                    for (Format supportedResamplerFormat
-                            : supportedResamplerFormats)
-                    {
-                        if (supportedRendererFormat.matches(
-                                supportedResamplerFormat))
-                        {
-                            rendererFormat = supportedRendererFormat;
-                            resampler.setOutputFormat(rendererFormat);
-                            renderer.setInputFormat(rendererFormat);
-                            break;
-                        }
-                    }
-                }
-            }
+				for (Format supportedRendererFormat : renderer.getSupportedInputFormats()) {
+					for (Format supportedResamplerFormat : supportedResamplerFormats) {
+						if (supportedRendererFormat.matches(supportedResamplerFormat)) {
+							rendererFormat = supportedRendererFormat;
+							resampler.setOutputFormat(rendererFormat);
+							renderer.setInputFormat(rendererFormat);
+							break;
+						}
+					}
+				}
+			}
 
-            Buffer rendererBuffer = buffer;
-            Buffer resamplerBuffer;
+			Buffer rendererBuffer = buffer;
+			Buffer resamplerBuffer;
 
-            rendererBuffer.setFormat(rendererFormat);
-            if (resampler == null)
-                resamplerBuffer = null;
-            else
-            {
-                resamplerBuffer = new Buffer();
+			rendererBuffer.setFormat(rendererFormat);
+			if (resampler == null)
+				resamplerBuffer = null;
+			else {
+				resamplerBuffer = new Buffer();
 
-                int bufferDataLength = DEFAULT_BUFFER_DATA_LENGTH;
+				int bufferDataLength = DEFAULT_BUFFER_DATA_LENGTH;
 
-                if (resamplerFormat instanceof AudioFormat)
-                {
-                    AudioFormat af = (AudioFormat) resamplerFormat;
-                    int frameSize
-                        = af.getSampleSizeInBits() / 8 * af.getChannels();
+				if (resamplerFormat instanceof AudioFormat) {
+					AudioFormat af = (AudioFormat) resamplerFormat;
+					int frameSize = af.getSampleSizeInBits() / 8 * af.getChannels();
 
-                    bufferDataLength = bufferDataLength / frameSize * frameSize;
-                }
-                bufferData = new byte[bufferDataLength];
-                resamplerBuffer.setData(bufferData);
-                resamplerBuffer.setFormat(resamplerFormat);
+					bufferDataLength = bufferDataLength / frameSize * frameSize;
+				}
+				bufferData = new byte[bufferDataLength];
+				resamplerBuffer.setData(bufferData);
+				resamplerBuffer.setFormat(resamplerFormat);
 
-                resampler.open();
-            }
+				resampler.open();
+			}
 
-            try
-            {
-                renderer.open();
-                renderer.start();
+			try {
+				renderer.open();
+				renderer.start();
 
-                int bufferLength;
+				int bufferLength;
 
-                while (isStarted()
-                        && ((bufferLength = audioStream.read(bufferData))
-                                != -1))
-                {
-                    audioStreamLength += bufferLength;
+				while (isStarted() && ((bufferLength = audioStream.read(bufferData)) != -1)) {
+					audioStreamLength += bufferLength;
 
-                    if (resampler == null)
-                    {
-                        rendererBuffer.setLength(bufferLength);
-                        rendererBuffer.setOffset(0);
-                    }
-                    else
-                    {
-                        resamplerBuffer.setLength(bufferLength);
-                        resamplerBuffer.setOffset(0);
-                        rendererBuffer.setLength(0);
-                        rendererBuffer.setOffset(0);
-                        resampler.process(resamplerBuffer, rendererBuffer);
-                    }
+					if (resampler == null) {
+						rendererBuffer.setLength(bufferLength);
+						rendererBuffer.setOffset(0);
+					} else {
+						resamplerBuffer.setLength(bufferLength);
+						resamplerBuffer.setOffset(0);
+						rendererBuffer.setLength(0);
+						rendererBuffer.setOffset(0);
+						resampler.process(resamplerBuffer, rendererBuffer);
+					}
 
-                    int rendererProcess;
+					int rendererProcess;
 
-                    if (rendererProcessStartTime == 0)
-                        rendererProcessStartTime = System.currentTimeMillis();
-                    do
-                    {
-                        rendererProcess = renderer.process(rendererBuffer);
-                        if (rendererProcess == Renderer.BUFFER_PROCESSED_FAILED)
-                        {
-                            logger.error(
-                                    "Failed to render audio stream " + uri);
-                            success = false;
-                            break;
-                        }
-                    }
-                    while ((rendererProcess
-                                & Renderer.INPUT_BUFFER_NOT_CONSUMED)
-                            == Renderer.INPUT_BUFFER_NOT_CONSUMED);
-                }
-            }
-            catch (IOException ioex)
-            {
-                logger.error("Failed to read from audio stream " + uri, ioex);
-                success = false;
-            }
-            catch (ResourceUnavailableException ruex)
-            {
-                logger.error(
-                        "Failed to open " + renderer.getClass().getName(),
-                        ruex);
-                success = false;
-            }
-        }
-        catch (ResourceUnavailableException ruex)
-        {
-            if (resampler != null)
-            {
-                logger.error(
-                        "Failed to open " + resampler.getClass().getName(),
-                        ruex);
-                success = false;
-            }
-        }
-        finally
-        {
-            try
-            {
-                audioStream.close();
-            }
-            catch (IOException ioex)
-            {
-                /*
-                 * The audio stream failed to close but it doesn't mean the URL
-                 * will fail to open again so ignore the exception.
-                 */
-            }
+					if (rendererProcessStartTime == 0)
+						rendererProcessStartTime = System.currentTimeMillis();
+					do {
+						rendererProcess = renderer.process(rendererBuffer);
+						if (rendererProcess == PlugIn.BUFFER_PROCESSED_FAILED) {
+							logger.error("Failed to render audio stream " + uri);
+							success = false;
+							break;
+						}
+					} while ((rendererProcess & PlugIn.INPUT_BUFFER_NOT_CONSUMED) == PlugIn.INPUT_BUFFER_NOT_CONSUMED);
+				}
+			} catch (IOException ioex) {
+				logger.error("Failed to read from audio stream " + uri, ioex);
+				success = false;
+			} catch (ResourceUnavailableException ruex) {
+				logger.error("Failed to open " + renderer.getClass().getName(), ruex);
+				success = false;
+			}
+		} catch (ResourceUnavailableException ruex) {
+			if (resampler != null) {
+				logger.error("Failed to open " + resampler.getClass().getName(), ruex);
+				success = false;
+			}
+		} finally {
+			try {
+				audioStream.close();
+			} catch (IOException ioex) {
+				/*
+				 * The audio stream failed to close but it doesn't mean the URL will fail to
+				 * open again so ignore the exception.
+				 */
+			}
 
-            if (resampler != null)
-                resampler.close();
+			if (resampler != null)
+				resampler.close();
 
-            /*
-             * XXX We do not know whether the Renderer implementation of the
-             * stop method will wait for the playback to complete.
-             */
-            if (success
-                    && (audioStreamFormat != null)
-                    && (audioStreamLength > 0)
-                    && (rendererProcessStartTime > 0)
-                    && isStarted())
-            {
-                long audioStreamDuration
-                    = (audioStreamFormat.computeDuration(audioStreamLength)
-                            + 999999)
-                        / 1000000;
+			/*
+			 * XXX We do not know whether the Renderer implementation of the stop method
+			 * will wait for the playback to complete.
+			 */
+			if (success && (audioStreamFormat != null) && (audioStreamLength > 0) && (rendererProcessStartTime > 0)
+					&& isStarted()) {
+				long audioStreamDuration = (audioStreamFormat.computeDuration(audioStreamLength) + 999999) / 1000000;
 
-                if (audioStreamDuration > 0)
-                {
-                    /*
-                     * XXX The estimation is not accurate because we do not
-                     * know, for example, how much the Renderer may be buffering
-                     * before it starts the playback.
-                     */
-                    audioStreamDuration += MIN_AUDIO_STREAM_DURATION;
+				if (audioStreamDuration > 0) {
+					/*
+					 * XXX The estimation is not accurate because we do not know, for example, how
+					 * much the Renderer may be buffering before it starts the playback.
+					 */
+					audioStreamDuration += MIN_AUDIO_STREAM_DURATION;
 
-                    boolean interrupted = false;
+					boolean interrupted = false;
 
-                    synchronized (sync)
-                    {
-                        while (isStarted())
-                        {
-                            long timeout
-                                = System.currentTimeMillis()
-                                    - rendererProcessStartTime;
+					synchronized (sync) {
+						while (isStarted()) {
+							long timeout = System.currentTimeMillis() - rendererProcessStartTime;
 
-                            if ((timeout >= audioStreamDuration)
-                                    || (timeout <= 0))
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    sync.wait(timeout);
-                                }
-                                catch (InterruptedException ie)
-                                {
-                                    interrupted = true;
-                                }
-                            }
-                        }
-                    }
-                    if (interrupted)
-                        Thread.currentThread().interrupt();
-                }
-            }
-        }
-        return success;
-    }
+							if ((timeout >= audioStreamDuration) || (timeout <= 0)) {
+								break;
+							} else {
+								try {
+									sync.wait(timeout);
+								} catch (InterruptedException ie) {
+									interrupted = true;
+								}
+							}
+						}
+					}
+					if (interrupted)
+						Thread.currentThread().interrupt();
+				}
+			}
+		}
+		return success;
+	}
 }

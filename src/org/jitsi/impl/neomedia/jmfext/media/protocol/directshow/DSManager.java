@@ -15,7 +15,7 @@
  */
 package org.jitsi.impl.neomedia.jmfext.media.protocol.directshow;
 
-import org.jitsi.util.*;
+import org.jitsi.util.JNIUtils;
 
 /**
  * DirectShow capture device manager.
@@ -34,89 +34,81 @@ import org.jitsi.util.*;
  * @author Sebastien Vincent
  * @author Lyubomir Marinov
  */
-public class DSManager
-{
-    /**
-     * Empty array of <tt>DSCaptureDevice</tt>s. Explicitly defined in order to
-     * avoid unnecessary allocations.
-     */
-    private static DSCaptureDevice[] EMPTY_DEVICES = new DSCaptureDevice[0];
+public class DSManager {
+	/**
+	 * Empty array of <tt>DSCaptureDevice</tt>s. Explicitly defined in order to
+	 * avoid unnecessary allocations.
+	 */
+	private static DSCaptureDevice[] EMPTY_DEVICES = new DSCaptureDevice[0];
 
-    static
-    {
-        JNIUtils.loadLibrary("jndirectshow", DSManager.class.getClassLoader());
-    }
+	static {
+		JNIUtils.loadLibrary("jndirectshow", DSManager.class.getClassLoader());
+	}
 
-    /**
-     * Delete native pointer.
-     *
-     * @param ptr native pointer to delete
-     */
-    private static native void destroy(long ptr);
+	/**
+	 * Delete native pointer.
+	 *
+	 * @param ptr native pointer to delete
+	 */
+	private static native void destroy(long ptr);
 
-    /**
-     * Initialize and gather existing capture device.
-     *
-     * @return native pointer
-     */
-    private static native long init();
+	/**
+	 * Initialize and gather existing capture device.
+	 *
+	 * @return native pointer
+	 */
+	private static native long init();
 
-    /**
-     * Array of all <tt>DSCaptureDevice</tt>s found on the OS.
-     */
-    private DSCaptureDevice[] captureDevices;
+	/**
+	 * Array of all <tt>DSCaptureDevice</tt>s found on the OS.
+	 */
+	private DSCaptureDevice[] captureDevices;
 
-    /**
-     * Native pointer.
-     */
-    private final long ptr;
+	/**
+	 * Native pointer.
+	 */
+	private final long ptr;
 
-    /**
-     * Constructor.
-     */
-    public DSManager()
-    {
-        ptr = init();
-        if (ptr == 0)
-            throw new IllegalStateException("ptr");
-    }
+	/**
+	 * Constructor.
+	 */
+	public DSManager() {
+		ptr = init();
+		if (ptr == 0)
+			throw new IllegalStateException("ptr");
+	}
 
-    /**
-     * Dispose the object.
-     */
-    public void dispose()
-    {
-        destroy(ptr);
-    }
+	/**
+	 * Dispose the object.
+	 */
+	public void dispose() {
+		destroy(ptr);
+	}
 
-    /**
-     * Get the array of capture devices.
-     *
-     * @return array of <tt>DSCaptureDevice</tt>s
-     */
-    public DSCaptureDevice[] getCaptureDevices()
-    {
-        if (captureDevices == null)
-        {
-            long ptrs[] = getCaptureDevices(ptr);
+	/**
+	 * Get the array of capture devices.
+	 *
+	 * @return array of <tt>DSCaptureDevice</tt>s
+	 */
+	public DSCaptureDevice[] getCaptureDevices() {
+		if (captureDevices == null) {
+			long ptrs[] = getCaptureDevices(ptr);
 
-            if ((ptrs != null) && (ptrs.length != 0))
-            {
-                captureDevices = new DSCaptureDevice[ptrs.length];
-                for (int i = 0 ; i < ptrs.length ; i++)
-                    captureDevices[i] = new DSCaptureDevice(ptrs[i]);
-            }
-            else
-                captureDevices = EMPTY_DEVICES;
-        }
-        return captureDevices;
-    }
+			if ((ptrs != null) && (ptrs.length != 0)) {
+				captureDevices = new DSCaptureDevice[ptrs.length];
+				for (int i = 0; i < ptrs.length; i++)
+					captureDevices[i] = new DSCaptureDevice(ptrs[i]);
+			} else
+				captureDevices = EMPTY_DEVICES;
+		}
+		return captureDevices;
+	}
 
-    /**
-     * Native method to get capture devices pointers.
-     *
-     * @param ptr native pointer of DSManager
-     * @return array of native pointer to DSCaptureDevice
-     */
-    private native long[] getCaptureDevices(long ptr);
+	/**
+	 * Native method to get capture devices pointers.
+	 *
+	 * @param ptr native pointer of DSManager
+	 * @return array of native pointer to DSCaptureDevice
+	 */
+	private native long[] getCaptureDevices(long ptr);
 }

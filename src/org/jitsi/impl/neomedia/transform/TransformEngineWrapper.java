@@ -23,79 +23,66 @@ package org.jitsi.impl.neomedia.transform;
  * @author George Politis
  * @author Lyubomir Marinov
  */
-public class TransformEngineWrapper<T extends TransformEngine>
-    implements TransformEngine
-{
-    /**
-     * The wrapped instance.
-     */
-    private T wrapped;
+public class TransformEngineWrapper<T extends TransformEngine> implements TransformEngine {
+	/**
+	 * The wrapped instance.
+	 */
+	private T wrapped;
 
-    /**
-     * Determines whether this {@code TransformEngineWrapper} contains a
-     * specific {@code TransformEngine}.
-     *
-     * @param t the {@code TransformEngine} to check whether it is contained in
-     * this {@code TransformEngineWrapper}
-     * @return {@code true} if {@code t} equals {@link #wrapped} or {@code t} is
-     * contained in the {@code chain} of {@code wrapped} (if {@code wrapped} is
-     * a {@code TransformEngineChain}); otherwise, {@code false}
-     */
-    public boolean contains(T t)
-    {
-        T wrapped = getWrapped();
+	/**
+	 * Determines whether this {@code TransformEngineWrapper} contains a specific
+	 * {@code TransformEngine}.
+	 *
+	 * @param t the {@code TransformEngine} to check whether it is contained in this
+	 *          {@code TransformEngineWrapper}
+	 * @return {@code true} if {@code t} equals {@link #wrapped} or {@code t} is
+	 *         contained in the {@code chain} of {@code wrapped} (if {@code wrapped}
+	 *         is a {@code TransformEngineChain}); otherwise, {@code false}
+	 */
+	public boolean contains(T t) {
+		T wrapped = getWrapped();
 
-        if (t.equals(wrapped))
-        {
-            return true;
-        }
-        else if (wrapped instanceof TransformEngineChain)
-        {
-            TransformEngine[] chain
-                = ((TransformEngineChain) wrapped).getEngineChain();
+		if (t.equals(wrapped)) {
+			return true;
+		} else if (wrapped instanceof TransformEngineChain) {
+			TransformEngine[] chain = ((TransformEngineChain) wrapped).getEngineChain();
 
-            if (chain != null && chain.length != 0)
-            {
-                for (TransformEngine c : chain)
-                {
-                    if (t.equals(c))
-                        return true;
-                }
-            }
-        }
+			if (chain != null && chain.length != 0) {
+				for (TransformEngine c : chain) {
+					if (t.equals(c))
+						return true;
+				}
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTCPTransformer()
-    {
-        T wrapped = getWrapped();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTCPTransformer() {
+		T wrapped = getWrapped();
 
-        return wrapped == null ? null : wrapped.getRTCPTransformer();
-    }
+		return wrapped == null ? null : wrapped.getRTCPTransformer();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PacketTransformer getRTPTransformer()
-    {
-        T wrapped = getWrapped();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PacketTransformer getRTPTransformer() {
+		T wrapped = getWrapped();
 
-        return wrapped == null ? null : wrapped.getRTPTransformer();
-    }
+		return wrapped == null ? null : wrapped.getRTPTransformer();
+	}
 
-    public T getWrapped()
-    {
-        return wrapped;
-    }
+	public T getWrapped() {
+		return wrapped;
+	}
 
-    public void setWrapped(T wrapped)
-    {
-        this.wrapped = wrapped;
-    }
+	public void setWrapped(T wrapped) {
+		this.wrapped = wrapped;
+	}
 }

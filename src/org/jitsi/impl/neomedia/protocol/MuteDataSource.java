@@ -21,21 +21,20 @@ package org.jitsi.impl.neomedia.protocol;
  *
  * @author Damian Minkov
  */
-public interface MuteDataSource
-{
-    /**
-     * Determines whether this <tt>DataSource</tt> is mute.
-     *
-     * @return <tt>true</tt> if this <tt>DataSource</tt> is mute; otherwise,
-     *         <tt>false</tt>
-     */
-    public boolean isMute();
+public interface MuteDataSource {
+	/**
+	 * Determines whether this <tt>DataSource</tt> is mute.
+	 *
+	 * @return <tt>true</tt> if this <tt>DataSource</tt> is mute; otherwise,
+	 *         <tt>false</tt>
+	 */
+	public boolean isMute();
 
-    /**
-     * Sets the mute state of this <tt>DataSource</tt>.
-     *
-     * @param mute <tt>true</tt> to mute this <tt>DataSource</tt>; otherwise,
-     *            <tt>false</tt>
-     */
-    public void setMute(boolean mute);
+	/**
+	 * Sets the mute state of this <tt>DataSource</tt>.
+	 *
+	 * @param mute <tt>true</tt> to mute this <tt>DataSource</tt>; otherwise,
+	 *             <tt>false</tt>
+	 */
+	public void setMute(boolean mute);
 }

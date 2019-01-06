@@ -15,22 +15,21 @@
  */
 package org.jitsi.service.neomedia.control;
 
-import javax.media.*;
-import java.util.*;
+import java.util.Map;
+
+import javax.media.Control;
 
 /**
- * An interface used to pass additional attributes (received via
- * SDP/Jingle) to codecs.
+ * An interface used to pass additional attributes (received via SDP/Jingle) to
+ * codecs.
  *
  * @author Damian Minkov
  */
-public interface AdvancedAttributesAwareCodec
-    extends Control
-{
-    /**
-     * Sets the additional attributes to <tt>attributes</tt>
-     *
-     * @param attributes The additional attributes to set
-     */
-    public void setAdvancedAttributes(Map<String, String> attributes);
+public interface AdvancedAttributesAwareCodec extends Control {
+	/**
+	 * Sets the additional attributes to <tt>attributes</tt>
+	 *
+	 * @param attributes The additional attributes to set
+	 */
+	public void setAdvancedAttributes(Map<String, String> attributes);
 }

@@ -15,117 +15,105 @@
  */
 package org.jitsi.impl.neomedia.rtcp;
 
-import net.sf.fmj.media.rtp.*;
-import org.jitsi.service.neomedia.*;
-import org.jitsi.util.*;
+import java.util.Iterator;
 
-import java.util.*;
+import org.jitsi.service.neomedia.ByteArrayBuffer;
+import org.jitsi.service.neomedia.RawPacket;
+import org.jitsi.util.RTCPUtils;
+
+import net.sf.fmj.media.rtp.RTCPHeader;
 
 /**
- * An {@code Iterator} for RTCP packets contained in a compound RTCP packet.
- * For a {@code PacketTransformer} that splits compound RTCP packets into
- * individual RTCP packets {@see CompoundPacketEngine}.
+ * An {@code Iterator} for RTCP packets contained in a compound RTCP packet. For
+ * a {@code PacketTransformer} that splits compound RTCP packets into individual
+ * RTCP packets {@see CompoundPacketEngine}.
  *
  * Instances of this class are not thread-safe. If multiple threads access an
  * instance concurrently, it must be synchronized externally.
  *
  * @author George Politis
  */
-public class RTCPIterator
-    implements Iterator<ByteArrayBuffer>
-{
-    /**
-     * The {@code RawPacket} that holds the RTCP packet to iterate.
-     */
-    private final ByteArrayBuffer baf;
+public class RTCPIterator implements Iterator<ByteArrayBuffer> {
+	/**
+	 * The {@code RawPacket} that holds the RTCP packet to iterate.
+	 */
+	private final ByteArrayBuffer baf;
 
-    /**
-     * The offset in the {@link #baf} where the next packet is to be looked for.
-     */
-    private int nextOff;
+	/**
+	 * The offset in the {@link #baf} where the next packet is to be looked for.
+	 */
+	private int nextOff;
 
-    /**
-     * The remaining length in {@link #baf}.
-     */
-    private int remainingLen;
+	/**
+	 * The remaining length in {@link #baf}.
+	 */
+	private int remainingLen;
 
-    /**
-     * The length of the last next element.
-     */
-    private int lastLen;
+	/**
+	 * The length of the last next element.
+	 */
+	private int lastLen;
 
-    /**
-     * Ctor.
-     *
-     * @param baf The {@code ByteArrayBuffer} that holds the compound RTCP
-     * packet to iterate.
-     */
-    public RTCPIterator(ByteArrayBuffer baf)
-    {
-        this.baf = baf;
-        if (baf != null)
-        {
-            this.nextOff = baf.getOffset();
-            this.remainingLen = baf.getLength();
-        }
-    }
+	/**
+	 * Ctor.
+	 *
+	 * @param baf The {@code ByteArrayBuffer} that holds the compound RTCP packet to
+	 *            iterate.
+	 */
+	public RTCPIterator(ByteArrayBuffer baf) {
+		this.baf = baf;
+		if (baf != null) {
+			this.nextOff = baf.getOffset();
+			this.remainingLen = baf.getLength();
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasNext()
-    {
-        return RTCPUtils.getLength
-            (baf.getBuffer(), nextOff, remainingLen) >= RTCPHeader.SIZE;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean hasNext() {
+		return RTCPUtils.getLength(baf.getBuffer(), nextOff, remainingLen) >= RTCPHeader.SIZE;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ByteArrayBuffer next()
-    {
-        int pktLen = RTCPUtils.getLength(
-            baf.getBuffer(), nextOff, remainingLen);
-        if (pktLen < RTCPHeader.SIZE)
-        {
-            throw new IllegalStateException();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ByteArrayBuffer next() {
+		int pktLen = RTCPUtils.getLength(baf.getBuffer(), nextOff, remainingLen);
+		if (pktLen < RTCPHeader.SIZE) {
+			throw new IllegalStateException();
+		}
 
-        RawPacket next = new RawPacket(baf.getBuffer(), nextOff, pktLen);
+		RawPacket next = new RawPacket(baf.getBuffer(), nextOff, pktLen);
 
-        lastLen = pktLen;
-        nextOff += pktLen;
-        remainingLen -= pktLen;
+		lastLen = pktLen;
+		nextOff += pktLen;
+		remainingLen -= pktLen;
 
-        if (remainingLen < 0)
-        {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+		if (remainingLen < 0) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
 
-        return next;
-    }
+		return next;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void remove()
-    {
-        if (lastLen == 0)
-        {
-            throw new IllegalStateException();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void remove() {
+		if (lastLen == 0) {
+			throw new IllegalStateException();
+		}
 
-        System.arraycopy(
-            baf.getBuffer(), nextOff,
-            baf.getBuffer(), nextOff - lastLen, remainingLen);
+		System.arraycopy(baf.getBuffer(), nextOff, baf.getBuffer(), nextOff - lastLen, remainingLen);
 
-        nextOff -= lastLen;
-        baf.setLength(baf.getLength() - lastLen);
+		nextOff -= lastLen;
+		baf.setLength(baf.getLength() - lastLen);
 
-        lastLen = 0;
-    }
+		lastLen = 0;
+	}
 
 }
