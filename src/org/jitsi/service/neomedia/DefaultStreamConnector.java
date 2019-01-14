@@ -110,7 +110,7 @@ public class DefaultStreamConnector implements StreamConnector {
 				}
 			}
 
-			int port = minPort++;
+			int port = minPort+=2;
 
 			try {
 				return (bindAddr == null) ? new DatagramSocket(port) : new DatagramSocket(port, bindAddr);
@@ -227,6 +227,17 @@ public class DefaultStreamConnector implements StreamConnector {
 	 */
 	@Override
 	public DatagramSocket getControlSocket() {
+		DatagramSocket dataSocket = getDataSocket();
+		if (dataSocket != null) {
+			try {
+				controlSocket = new DatagramSocket(dataSocket.getLocalPort()+1, dataSocket.getLocalAddress());
+				return controlSocket;
+			} catch (SocketException se) {
+				logger.warn("Retrying a bind because of a failure to bind to address " 
+						+ dataSocket.getLocalAddress() + " and port " + dataSocket.getLocalPort()+1,
+						se);
+			}
+		}
 		if ((controlSocket == null) && (bindAddr != null))
 			controlSocket = createDatagramSocket(bindAddr);
 		return controlSocket;
